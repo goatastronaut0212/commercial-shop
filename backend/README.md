@@ -1,4 +1,4 @@
-# Mkjean backend
+# Commercial website backend
 
 Written in Go.
 
