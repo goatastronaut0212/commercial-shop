@@ -1,6 +1,6 @@
-CREATE DATABASE mkjeandb;
+CREATE DATABASE shopdb;
 
-\c mkjeandb;
+\c shopdb;
 
 CREATE TABLE category (
     category_id    VARCHAR(20),
