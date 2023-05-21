@@ -3,7 +3,7 @@ package database
 const (
     username = "postgres"
     password = "postgres"
-    database = "mkjeandb"
+    database = "shopdb"
     host = "localhost"
     port = "5432"
 )
