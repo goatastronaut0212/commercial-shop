@@ -11,15 +11,16 @@ import (
     "commercial-shop.com/database"
 )
 
+var ctx = context.Background()
+
 type Category struct {
-    Id   string
-    Name string
+    Id   string   `json:"id" binding:"required"`
+    Name string   `json:"name" binding:"required"`
 }
 
 func FindAll() ([]Category, error) {
     categorySlice := []Category{}
     c := &Category{}
-    ctx := context.Background()
 
     // Get connection to database and check error
     // Close after function end with defer
@@ -60,7 +61,6 @@ func FindAll() ([]Category, error) {
 
 func FindById(id string) (Category, error) {
     c := &Category{}
-    ctx := context.Background()
 
     // Get connection to database and check error
     // Close after function end with defer
@@ -73,7 +73,7 @@ func FindById(id string) (Category, error) {
     defer conn.Close()
 
     // sql as a basic SQL commamd
-    sql := "SELECT * FROM category where category_id='" + id + "';"
+    sql := "SELECT * FROM category WHERE category_id='" + id + "';"
 
     // Get rows from conn with SQL command
     err = conn.QueryRow(ctx, sql).Scan(&c.Id, &c.Name)
@@ -83,4 +83,76 @@ func FindById(id string) (Category, error) {
     }
   
     return *c, nil
+}
+
+func Create(id string, name string) error {
+    // Get connection to database and check error
+    // Close after function end with defer
+    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
+        return err 
+    }
+    defer conn.Close()
+
+    // sql as a basic SQL commamd
+    sql := "INSERT INTO category VALUES ('" + id + "', '"+ name +"');"
+
+    // Get rows from conn with SQL command
+    _, err = conn.Exec(ctx, sql)
+    if err != nil {
+        log.Fatal(err)
+        return err
+    }
+  
+    return nil
+}
+
+func Update(id string, name string) error {
+    // Get connection to database and check error
+    // Close after function end with defer
+    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
+        return err 
+    }
+    defer conn.Close()
+
+    // sql as a basic SQL commamd
+    sql := "UPDATE category SET category_name='"+ name +"' WHERE category_id='"+ id +"';"
+
+    // Get rows from conn with SQL command
+    _, err = conn.Exec(ctx, sql)
+    if err != nil {
+        log.Fatal(err)
+        return err
+    }
+  
+    return nil
+}
+
+func Delete(id string) error {
+    // Get cpgxpoolonnection to database and check error
+    // Close after function end with defer
+    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
+        return err 
+    }
+    defer conn.Close()
+
+    // sql as a basic SQL commamd
+    sql := "DELETE FROM category WHERE category_id='" + id + "';"
+
+    // Get rows from conn with SQL command
+    _, err = conn.Exec(ctx, sql)
+    if err != nil {
+        log.Fatal(err)
+        return err
+    }
+  
+    return nil
 }

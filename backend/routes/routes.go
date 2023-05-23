@@ -8,7 +8,7 @@ var router = gin.Default()
 
 func Run(port string) {
     getRoutes()
-    router.Run(port)
+    router.Run(":" + port)
 }
 
 func getRoutes() {
