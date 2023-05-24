@@ -9,13 +9,14 @@ CREATE TABLE category (
 );
 
 CREATE TABLE product (
-    product_id     VARCHAR(20),
-    category_id    VARCHAR(20),
-    product_name   VARCHAR(20),
-    product_size   VARCHAR(20),
-    product_farbic VARCHAR(40),
-    product_price  INT,
-    product_detail VARCHAR(200),
+    product_id      VARCHAR(20),
+    category_id     VARCHAR(20),
+    product_name    VARCHAR(20),
+    product_size    VARCHAR(20),
+    product_farbic  VARCHAR(50),
+    product_price   INT,
+    product_amount  INT CHECK(product_amount > 0), 
+    product_detail  VARCHAR(200),
     PRIMARY KEY(product_id),
     CONSTRAINT fk_category_id_for_product
         FOREIGN KEY (category_id)
