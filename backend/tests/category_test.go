@@ -1,4 +1,4 @@
-package category 
+package category_test 
 
 import (
     "testing"

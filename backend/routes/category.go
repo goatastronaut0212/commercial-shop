@@ -11,4 +11,7 @@ func addCategoryRoutes(rg *gin.RouterGroup) {
 
     categoryRoute.GET("", controllers.GetCategoryAll)
     categoryRoute.GET("/:id", controllers.GetCategoryById)
+    categoryRoute.POST("", controllers.CreateCategory)
+    categoryRoute.PATCH("/:id", controllers.UpdateCategory)
+    categoryRoute.DELETE("/:id", controllers.DeleteCategory)
 }

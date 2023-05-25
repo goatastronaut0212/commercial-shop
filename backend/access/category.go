@@ -1,4 +1,4 @@
-package category 
+package access 
 
 import (
     "context"
@@ -9,23 +9,17 @@ import (
     "github.com/jackc/pgx/v5/pgxpool"
 
     "commercial-shop.com/database"
+    "commercial-shop.com/models"
 )
 
 var ctx = context.Background()
 
-type Category struct {
-    Id   string   `json:"id" binding:"required"`
-    Name string   `json:"name" binding:"required"`
-}
+func FindCategoryAll() ([]models.Category, error) {
+    categorySlice := []models.Category{}
+    c := &models.Category{}
 
-func FindAll() ([]Category, error) {
-    categorySlice := []Category{}
-    c := &Category{}
-
-    // Get connection to database and check error
-    // Close after function end with defer
+    // Connect to database and close after executing command
     conn, err := pgxpool.New(ctx, database.CONNECT_STR)
-
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return nil, err 
@@ -59,37 +53,34 @@ func FindAll() ([]Category, error) {
     return categorySlice, nil
 }
 
-func FindById(id string) (Category, error) {
-    c := &Category{}
+func FindCategoryById(id *string) (models.Category, error) {
+    cg := &models.Category{}
 
-    // Get connection to database and check error
-    // Close after function end with defer
+    // Connect to database and close after executing command
     conn, err := pgxpool.New(ctx, database.CONNECT_STR)
 
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
-        return *c, err 
+        return *cg, err 
     }
     defer conn.Close()
 
     // sql as a basic SQL commamd
-    sql := "SELECT * FROM category WHERE category_id='" + id + "';"
+    sql := "SELECT * FROM category WHERE category_id='" + *id + "';"
 
     // Get rows from conn with SQL command
-    err = conn.QueryRow(ctx, sql).Scan(&c.Id, &c.Name)
+    err = conn.QueryRow(ctx, sql).Scan(&cg.Id, &cg.Name)
     if err != nil {
         log.Fatal(err)
-        return *c, err
+        return *cg, err
     }
   
-    return *c, nil
+    return *cg, nil
 }
 
-func Create(id string, name string) error {
-    // Get connection to database and check error
-    // Close after function end with defer
+func CreateCategory(cg *models.Category) error {
+    // Connect to database and close after executing command
     conn, err := pgxpool.New(ctx, database.CONNECT_STR)
-
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return err 
@@ -97,7 +88,7 @@ func Create(id string, name string) error {
     defer conn.Close()
 
     // sql as a basic SQL commamd
-    sql := "INSERT INTO category VALUES ('" + id + "', '"+ name +"');"
+    sql := "INSERT INTO category VALUES ('" + cg.Id + "', '"+ cg.Name +"');"
 
     // Get rows from conn with SQL command
     _, err = conn.Exec(ctx, sql)
@@ -109,11 +100,9 @@ func Create(id string, name string) error {
     return nil
 }
 
-func Update(id string, name string) error {
-    // Get connection to database and check error
-    // Close after function end with defer
+func UpdateCategory(cg *models.Category) error {
+    // Connect to database and close after executing command
     conn, err := pgxpool.New(ctx, database.CONNECT_STR)
-
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return err 
@@ -121,7 +110,7 @@ func Update(id string, name string) error {
     defer conn.Close()
 
     // sql as a basic SQL commamd
-    sql := "UPDATE category SET category_name='"+ name +"' WHERE category_id='"+ id +"';"
+    sql := "UPDATE category SET category_name='"+ cg.Name +"' WHERE category_id='"+ cg.Id +"';"
 
     // Get rows from conn with SQL command
     _, err = conn.Exec(ctx, sql)
@@ -133,11 +122,9 @@ func Update(id string, name string) error {
     return nil
 }
 
-func Delete(id string) error {
-    // Get cpgxpoolonnection to database and check error
-    // Close after function end with defer
+func DeleteCategory(id *string) error {
+    // Connect to database and close after executing command
     conn, err := pgxpool.New(ctx, database.CONNECT_STR)
-
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return err 
@@ -145,7 +132,7 @@ func Delete(id string) error {
     defer conn.Close()
 
     // sql as a basic SQL commamd
-    sql := "DELETE FROM category WHERE category_id='" + id + "';"
+    sql := "DELETE FROM category WHERE category_id='" + *id + "';"
 
     // Get rows from conn with SQL command
     _, err = conn.Exec(ctx, sql)
