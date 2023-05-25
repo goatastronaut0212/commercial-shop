@@ -6,7 +6,7 @@ import (
     "log"
     "os"
 
-    "github.com/jackc/pgx/v5/pgxpool"
+    "github.com/jackc/pgx/v5"
 
     "commercial-shop.com/database"
     "commercial-shop.com/models"
@@ -19,12 +19,12 @@ func FindCategoryAll() ([]models.Category, error) {
     c := &models.Category{}
 
     // Connect to database and close after executing command
-    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+    conn, err := pgx.Connect(ctx, database.CONNECT_STR)
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return nil, err 
     }
-    defer conn.Close()
+    defer conn.Close(ctx)
 
     // sql as a basic SQL commamd
     sql := "SELECT * FROM category;"
@@ -57,13 +57,13 @@ func FindCategoryById(id *string) (models.Category, error) {
     cg := &models.Category{}
 
     // Connect to database and close after executing command
-    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+    conn, err := pgx.Connect(ctx, database.CONNECT_STR)
 
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return *cg, err 
     }
-    defer conn.Close()
+    defer conn.Close(ctx)
 
     // sql as a basic SQL commamd
     sql := "SELECT * FROM category WHERE category_id='" + *id + "';"
@@ -80,12 +80,12 @@ func FindCategoryById(id *string) (models.Category, error) {
 
 func CreateCategory(cg *models.Category) error {
     // Connect to database and close after executing command
-    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+    conn, err := pgx.Connect(ctx, database.CONNECT_STR)
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return err 
     }
-    defer conn.Close()
+    defer conn.Close(ctx)
 
     // sql as a basic SQL commamd
     sql := "INSERT INTO category VALUES ('" + cg.Id + "', '"+ cg.Name +"');"
@@ -102,12 +102,12 @@ func CreateCategory(cg *models.Category) error {
 
 func UpdateCategory(cg *models.Category) error {
     // Connect to database and close after executing command
-    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+    conn, err := pgx.Connect(ctx, database.CONNECT_STR)
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return err 
     }
-    defer conn.Close()
+    defer conn.Close(ctx)
 
     // sql as a basic SQL commamd
     sql := "UPDATE category SET category_name='"+ cg.Name +"' WHERE category_id='"+ cg.Id +"';"
@@ -124,12 +124,12 @@ func UpdateCategory(cg *models.Category) error {
 
 func DeleteCategory(id *string) error {
     // Connect to database and close after executing command
-    conn, err := pgxpool.New(ctx, database.CONNECT_STR)
+    conn, err := pgx.Connect(ctx, database.CONNECT_STR)
     if err != nil {
         fmt.Fprintf(os.Stderr, "Unable to connect to database: %v", err)
         return err 
     }
-    defer conn.Close()
+    defer conn.Close(ctx)
 
     // sql as a basic SQL commamd
     sql := "DELETE FROM category WHERE category_id='" + *id + "';"
