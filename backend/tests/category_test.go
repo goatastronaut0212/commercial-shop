@@ -1,42 +1,47 @@
-package category_test 
+package category_test
 
 import (
-    "testing"
+	"testing"
+
+	"commercial-shop.com/access"
+	"commercial-shop.com/models"
 )
 
-func TestFindAll(t *testing.T) {
-    _, err := FindAll()
-
-    if err != nil {
-        t.Fatalf("Error: %v", err)
-    }
+func TestCategoryFindAll(t *testing.T) {
+	_, err := access.FindCategoryAll()
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 }
 
-func TestFindById(t *testing.T) {
-    _, err := FindById("1")
-
-    if err != nil {
-        t.Fatalf("Error: %v", err)
-    }
+func TestCategoryFindById(t *testing.T) {
+	i := "1"
+	_, err := access.FindCategoryById(&i)
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 }
 
-func TestCreate(t *testing.T) {
-    err := Create("3", "Nón")
-    if err != nil {
-        t.Fatalf("Error: %v", err)
-    }
+func TestCategoryCreate(t *testing.T) {
+	c := models.Category{Id: "3", Name: "Nón"}
+	err := access.CreateCategory(&c)
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 }
 
-func TestUpdate(t *testing.T) {
-    err := Update("3", "Áo khoác")
-    if err != nil {
-        t.Fatalf("Error: %v", err)
-    }
+func TestCategoryUpdate(t *testing.T) {
+	c := models.Category{Id: "3", Name: "Áo khoác"}
+	err := access.UpdateCategory(&c)
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 }
 
-func TestDelete(t *testing.T) {
-    err := Delete("3")
-    if err != nil {
-        t.Fatalf("Err: %v", err)
-    }
+func TestCategoryDelete(t *testing.T) {
+	i := "3"
+	err := access.DeleteCategory(&i)
+	if err != nil {
+		t.Fatalf("Err: %v", err)
+	}
 }
