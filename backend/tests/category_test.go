@@ -8,7 +8,9 @@ import (
 )
 
 func TestCategoryFindAll(t *testing.T) {
-	_, err := access.FindCategoryAll()
+	limit := 10
+	page := 10
+	_, err := access.FindCategoryAll(&limit, &page)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
