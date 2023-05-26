@@ -1,9 +1,9 @@
-package main 
+package main
 
 import (
-    "commercial-shop.com/routes"
+	"commercial-shop.com/routes"
 )
 
 func main() {
-	  routes.Run("4505")
+	routes.Run("4505")
 }
