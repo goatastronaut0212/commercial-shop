@@ -9,12 +9,11 @@ CREATE TABLE category (
 );
 
 CREATE TABLE product (
-    product_id      VARCHAR(20) NOT NULL,
-    category_id     VARCHAR(20) NOT NULL,
-    product_name    VARCHAR(20),
-    product_farbic  VARCHAR(50),
-    product_price   INT DEFAULT 0,
-    product_detail  VARCHAR(200),
+    product_id      VARCHAR(20)  NOT NULL,
+    category_id     VARCHAR(20)  NOT NULL,
+    product_name    VARCHAR(20)  DEFAULT 'Chưa có thông tin',
+    product_price   INT          DEFAULT 0,
+    product_detail  VARCHAR(400) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY(product_id),
     CONSTRAINT fk_category_id_for_product
         FOREIGN KEY (category_id)
@@ -22,17 +21,19 @@ CREATE TABLE product (
 );
 
 CREATE TABLE product_detail (
-    product_id     VARCHAR(20) NOT NULL,
-    product_size   VARCHAR(20),
-    product_amount INT CHECK(product_amount > 0),
+    product_id     VARCHAR(20)  NOT NULL,
+    product_color  VARCHAR(20)  DEFAULT 'Chưa có thông tin',
+    product_fabric VARCHAR(20)  DEFAULT 'Chưa có thông tin',
+    product_size   VARCHAR(20)  DEFAULT 'Chưa có thông tin',
+    product_amount INT          CHECK(product_amount > 0),
     CONSTRAINT fk_product_id_for_product_detail
         FOREIGN KEY (product_id)
         REFERENCES product(product_id)
-)
+);
 
 CREATE TABLE product_image (
     product_image_id VARCHAR(20) NOT NULL,
-    product_id       VARCHAR(20),
+    product_id       VARCHAR(20) NOT NULL,
     product_image    BYTEA,
     PRIMARY KEY(product_image_id),
     CONSTRAINT fk_product_id_for_product_image
@@ -51,10 +52,10 @@ CREATE TABLE customer (
 
 CREATE TABLE account (
     account_username    VARCHAR(20) NOT NULL,
+    customer_id         VARCHAR(20) NOT NULL,
     account_password    VARCHAR(20),
     account_displayname VARCHAR(20),
     role_id             INT CHECK (role_id = 0 OR role_id = 1),
-    customer_id         VARCHAR(20),
     PRIMARY KEY(account_username),
     CONSTRAINT fk_customer_id_for_account
         FOREIGN KEY (customer_id)
@@ -71,8 +72,8 @@ CREATE TABLE discount (
 
 CREATE TABLE bill_detail (
     bill_detail_id VARCHAR(20) NOT NULL,
-    product_id     VARCHAR(20),
-    discount_id    VARCHAR(20),
+    product_id     VARCHAR(20) NOT NULL,
+    discount_id    VARCHAR(20) NOT NULL,
     PRIMARY KEY (bill_detail_id),
     CONSTRAINT fk_product_id_for_bill_detail
         FOREIGN KEY (product_id)
@@ -81,8 +82,8 @@ CREATE TABLE bill_detail (
 
 CREATE TABLE bill_info (
     bill_id        VARCHAR(20) NOT NULL,
-    bill_detail_id VARCHAR(20),
-    customer_id    VARCHAR(20),
+    bill_detail_id VARCHAR(20) NOT NULL,
+    customer_id    VARCHAR(20) NOT NULL,
     bill_date      VARCHAR(20),
     PRIMARY KEY(bill_id),
     CONSTRAINT fk_bill_detail_id_for_bill_info
