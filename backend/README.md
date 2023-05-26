@@ -12,13 +12,13 @@ See in [here](https://google.github.io/styleguide/go/index)
 
 ### Grab all package dependencies
 
-```sh
+```
 go mod tidy
 ```
 
 ### Build program
 
-```sh
+```
 go build .
 ```
 
@@ -28,18 +28,34 @@ go build .
 
 + If Unix-like
 
-```sh
+```
 ./commercial-shop.com
 ```
 
 + If Windows
 
-```sh
+```
 ./commercial-shop.com.exe
 ```
 
 ### Clean binary file
 
-```sh
+```
 go clean
+```
+
+## Testing
+
+Since we only using `testing` standard library.
+
+If you want to test and see if it pass
+
+```
+go test
+```
+
+If you want to check all functions lists all of the tests and their results. 
+
+```
+go test -v
 ```
