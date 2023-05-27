@@ -16,32 +16,32 @@ func TestCategoryFindAll(t *testing.T) {
 }
 
 func TestCategoryFindById(t *testing.T) {
-	i := "1"
-	_, err := FindCategoryById(&i)
+	id := "1"
+	_, err := FindCategoryById(&id)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
 func TestCategoryCreate(t *testing.T) {
-	c := models.Category{Id: "3", Name: "Nón"}
-	err := CreateCategory(&c)
+	data := models.Category{Id: "3", Name: "Nón"}
+	err := CreateCategory(&data)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
 func TestCategoryUpdate(t *testing.T) {
-	c := models.Category{Id: "3", Name: "Áo khoác"}
-	err := UpdateCategory(&c)
+	data := models.Category{Id: "3", Name: "Áo khoác"}
+	err := UpdateCategory(&data)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
 func TestCategoryDelete(t *testing.T) {
-	i := "3"
-	err := DeleteCategory(&i)
+	id := "3"
+	err := DeleteCategory(&id)
 	if err != nil {
 		t.Fatalf("Err: %v", err)
 	}

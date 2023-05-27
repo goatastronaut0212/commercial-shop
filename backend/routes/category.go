@@ -1,17 +1,17 @@
-package routes 
+package routes
 
 import (
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 
-    "commercial-shop.com/controllers"
+	"commercial-shop.com/controllers"
 )
 
 func addCategoryRoutes(rg *gin.RouterGroup) {
-    categoryRoute := rg.Group("category")
+	route := rg.Group("category")
 
-    categoryRoute.GET("", controllers.GetCategoryAll)
-    categoryRoute.GET("/:id", controllers.GetCategoryById)
-    categoryRoute.POST("", controllers.CreateCategory)
-    categoryRoute.PATCH("/:id", controllers.UpdateCategory)
-    categoryRoute.DELETE("/:id", controllers.DeleteCategory)
+	route.GET("", controllers.GetCategoryAll)
+	route.GET("/:id", controllers.GetCategoryById)
+	route.POST("", controllers.CreateCategory)
+	route.PATCH("/:id", controllers.UpdateCategory)
+	route.DELETE("/:id", controllers.DeleteCategory)
 }

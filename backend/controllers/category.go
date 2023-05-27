@@ -52,10 +52,10 @@ func GetCategoryById(c *gin.Context) {
 }
 
 func CreateCategory(c *gin.Context) {
-	category := models.Category{}
-	c.ShouldBindJSON(&category)
+	data := models.Category{}
+	c.ShouldBindJSON(&data)
 
-	err := access.CreateCategory(&category)
+	err := access.CreateCategory(&data)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create category!"})
@@ -65,11 +65,11 @@ func CreateCategory(c *gin.Context) {
 }
 
 func UpdateCategory(c *gin.Context) {
-	category := models.Category{}
-	c.ShouldBindJSON(&category)
-	category.Id = c.Param("id")
+	data := models.Category{}
+	c.ShouldBindJSON(&data)
+	data.Id = c.Param("id")
 
-	err := access.UpdateCategory(&category)
+	err := access.UpdateCategory(&data)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update category!"})
