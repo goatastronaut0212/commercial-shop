@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"commercial-shop.com/models"
-	// _ "commercial-shop.com/models"
 )
 
 func TestProductFindAll(t *testing.T) {
@@ -18,7 +17,7 @@ func TestProductFindAll(t *testing.T) {
 
 func TestProductFindById(t *testing.T) {
 	id := "1"
-	_, err := FindCategoryById(&id)
+	_, err := FindProductById(&id)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
