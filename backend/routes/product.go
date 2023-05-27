@@ -7,7 +7,11 @@ import (
 )
 
 func addProductRoutes(rg *gin.RouterGroup) {
-	categoryRoute := rg.Group("product")
+	route := rg.Group("product")
 
-	categoryRoute.GET("", controllers.GetProductAll)
+	route.GET("", controllers.GetProductAll)
+	route.GET("/:id", controllers.GetProductById)
+	route.POST("", controllers.CreateProduct)
+	route.PATCH("/:id", controllers.UpdateProduct)
+	route.DELETE("/:id", controllers.DeleteProduct)
 }

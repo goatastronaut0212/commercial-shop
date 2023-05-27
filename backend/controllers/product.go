@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"commercial-shop.com/access"
+	"commercial-shop.com/models"
 )
 
 func GetProductAll(c *gin.Context) {
@@ -37,4 +38,52 @@ func GetProductAll(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, data)
+}
+
+func GetProductById(c *gin.Context) {
+	id := c.Param("id")
+	data, err := access.FindProductById(&id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product value"})
+		return
+	}
+	c.JSON(http.StatusOK, data)
+}
+
+func CreateProduct(c *gin.Context) {
+	data := models.Product{}
+	c.ShouldBindJSON(&data)
+	err := access.CreateProduct(&data)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create product successfully!"})
+}
+
+func UpdateProduct(c *gin.Context) {
+	data := models.Product{}
+	c.ShouldBindJSON(&data)
+	data.Id = c.Param("id")
+
+	err := access.UpdateProduct(&data)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "update product successfully!"})
+}
+
+func DeleteProduct(c *gin.Context) {
+	id := c.Param("id")
+	err := access.DeleteProduct(&id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete product successfully!"})
 }
