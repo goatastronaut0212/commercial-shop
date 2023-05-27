@@ -21,3 +21,9 @@ type ProductDetail struct {
 	Amount      int    `json:"amount"      binding:"required"`
 	Description string `json:"description" binding:"required"`
 }
+
+type ProductImage struct {
+	Id              string `json:"id"              binding:"required"`
+	IdProductDetail string `json:"idProductDetail" binding:"required"`
+	Image           []byte `json:"image"           binding:"required"`
+}
