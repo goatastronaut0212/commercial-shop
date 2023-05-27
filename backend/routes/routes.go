@@ -15,4 +15,5 @@ func getRoutes() {
 	r := router.Group("/")
 	addCategoryRoutes(r)
 	addProductRoutes(r)
+	addProductDetailRoutes(r)
 }
