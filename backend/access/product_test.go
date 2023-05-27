@@ -29,8 +29,6 @@ func TestProductCreate(t *testing.T) {
 		Id:         "3",
 		IdCategory: "1",
 		Name:       "Quần nam 3",
-		Price:      300000,
-		Detail:     "Chưa có thông tin",
 	}
 	err := CreateProduct(&data)
 	if err != nil {
@@ -43,8 +41,6 @@ func TestProductUpdate(t *testing.T) {
 		Id:         "3",
 		IdCategory: "1",
 		Name:       "Quần nam 3",
-		Price:      230000,
-		Detail:     "Quần nam 3 mẫu đẹp",
 	}
 	err := UpdateProduct(&data)
 	if err != nil {

@@ -22,7 +22,7 @@ func FindProductAll(limit *int, page *int) ([]models.Product, error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT product_id, category_id, product_name, product_price, product_detail FROM product ORDER BY product_id LIMIT @limit OFFSET @offset;"
+	sql := "SELECT product_id, category_id, product_name FROM product ORDER BY product_id LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),
@@ -36,7 +36,7 @@ func FindProductAll(limit *int, page *int) ([]models.Product, error) {
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan(&data.Id, &data.IdCategory, &data.Name, &data.Price, &data.Detail)
+		err := rows.Scan(&data.Id, &data.IdCategory, &data.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -63,7 +63,7 @@ func FindProductById(id *string) (models.Product, error) {
 	sql := "SELECT * FROM product WHERE product_id='" + *id + "';"
 
 	// Get rows from conn with SQL command
-	err = conn.QueryRow(database.CTX, sql).Scan(&data.Id, &data.IdCategory, &data.Name, &data.Price, &data.Detail)
+	err = conn.QueryRow(database.CTX, sql).Scan(&data.Id, &data.IdCategory, &data.Name)
 	if err != nil {
 		return *data, err
 	}
@@ -80,13 +80,11 @@ func CreateProduct(data *models.Product) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "INSERT INTO product VALUES (@id, @idCategory, @name, @price, @detail);"
+	sql := "INSERT INTO product VALUES (@id, @idCategory, @name);"
 	args := pgx.NamedArgs{
 		"id":         data.Id,
 		"idCategory": data.IdCategory,
 		"name":       data.Name,
-		"price":      data.Price,
-		"detail":     data.Detail,
 	}
 
 	// Execute sql command
@@ -107,13 +105,11 @@ func UpdateProduct(data *models.Product) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "UPDATE product SET category_id=@idCategory, product_name=@name, product_price=@price, product_detail=@detail WHERE product_id=@id;"
+	sql := "UPDATE product SET category_id=@idCategory, product_name=@name WHERE product_id=@id;"
 	args := pgx.NamedArgs{
 		"id":         data.Id,
 		"idCategory": data.IdCategory,
 		"name":       data.Name,
-		"price":      data.Price,
-		"detail":     data.Detail,
 	}
 
 	// Execute sql command
