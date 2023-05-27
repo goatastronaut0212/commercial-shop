@@ -38,9 +38,9 @@ CREATE TABLE product_image (
     product_detail_id  VARCHAR(20) NOT NULL,
     product_image      BYTEA,
     PRIMARY KEY (product_image_id),
-    CONSTRAINT fk_product_id_for_product_image
-        FOREIGN KEY (product_id)
-        REFERENCES product(product_id)
+    CONSTRAINT fk_product_detail_id_for_product_image
+        FOREIGN KEY (product_detail_id)
+        REFERENCES product_detail(product_detail_id)
 );
 
 CREATE TABLE customer (
