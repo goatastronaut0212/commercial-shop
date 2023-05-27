@@ -23,9 +23,9 @@ CREATE TABLE product_detail (
     product_id           VARCHAR(20)  NOT NULL,
     product_color        VARCHAR(20)  DEFAULT 'Chưa có thông tin',
     product_fabric       VARCHAR(20)  DEFAULT 'Chưa có thông tin',
-    product_size         VARCHAR(20)  DEFAULT 'Chưa có thông tin',
+    product_size         VARCHAR(4)   DEFAULT 'None',
     product_price        INT          DEFAULT 0,
-    product_amount       INT          CHECK(product_amount > 0),
+    product_amount       INT          DEFAULT 0 CHECK(product_amount >= 0),
     product_description  VARCHAR(400) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (product_detail_id),
     CONSTRAINT fk_product_id_for_product_detail
@@ -76,7 +76,10 @@ CREATE TABLE bill_detail (
     bill_detail_id VARCHAR(20) NOT NULL,
     product_id     VARCHAR(20) NOT NULL,
     discount_id    VARCHAR(20) NOT NULL,
-    PRIMARY KEY (bill_detail_id),
+    PRIMARY KEY (bill_id),
+    CONSTRAINT fk_bill_id_for_bill_detail
+        FOREIGN KEY (bill_id)
+        REFERENCES bill_info(bill_id),
     CONSTRAINT fk_product_id_for_bill_detail
         FOREIGN KEY (product_id)
         REFERENCES product(product_id)
@@ -84,13 +87,9 @@ CREATE TABLE bill_detail (
 
 CREATE TABLE bill_info (
     bill_id        VARCHAR(20) NOT NULL,
-    bill_detail_id VARCHAR(20) NOT NULL,
     customer_id    VARCHAR(20) NOT NULL,
     bill_date      VARCHAR(20),
-    PRIMARY KEY (bill_id),
-    CONSTRAINT fk_bill_detail_id_for_bill_info
-        FOREIGN KEY (bill_detail_id)
-        REFERENCES bill_detail(bill_detail_id)
+    PRIMARY KEY (bill_id)
 );
 
 \i insert.sql
