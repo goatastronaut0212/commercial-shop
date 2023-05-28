@@ -1,8 +1,18 @@
 package models
 
+import "time"
+
 type Category struct {
 	Id   string `json:"id"   binding:"required"`
 	Name string `json:"name" binding:"required"`
+}
+
+type Discount struct {
+	Id          string    `string:"id"          binding:"required"`
+	Description string    `string:"description" binding:"required"`
+	Percent     float64   `string:"percent"     binding:"required"`
+	DateStart   time.Time `string:"dateStart"   binding:"required"`
+	DateEnd     time.Time `string:"dateEnd"     binding:"required"`
 }
 
 type Product struct {
