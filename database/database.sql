@@ -66,30 +66,32 @@ CREATE TABLE account (
 
 CREATE TABLE discount (
     discount_id          VARCHAR(20) NOT NULL,
-    discount_description VARCHAR(20),
-    discount_date_start  DATE,
-    discount_date_end    DATE,
+    discount_description VARCHAR(200) DEFAULT 'Chưa có thông tin',
+    discount_percent     REAL DEFAULT 0.0,
+    discount_date_start  DATE DEFAULT NOW(),
+    discount_date_end    DATE DEFAULT NOW(),
     PRIMARY KEY (discount_id)
+);
+
+CREATE TABLE bill_info (
+    bill_id        VARCHAR(20) NOT NULL,
+    customer_id    VARCHAR(20) NOT NULL,
+    bill_date      VARCHAR(20) DEFAULT NOW(),
+    PRIMARY KEY (bill_id)
 );
 
 CREATE TABLE bill_detail (
     bill_detail_id VARCHAR(20) NOT NULL,
+    bill_id        VARCHAR(20) NOT NULL,
     product_id     VARCHAR(20) NOT NULL,
     discount_id    VARCHAR(20) NOT NULL,
-    PRIMARY KEY (bill_id),
+    PRIMARY KEY (bill_detail_id),
     CONSTRAINT fk_bill_id_for_bill_detail
         FOREIGN KEY (bill_id)
         REFERENCES bill_info(bill_id),
     CONSTRAINT fk_product_id_for_bill_detail
         FOREIGN KEY (product_id)
         REFERENCES product(product_id)
-);
-
-CREATE TABLE bill_info (
-    bill_id        VARCHAR(20) NOT NULL,
-    customer_id    VARCHAR(20) NOT NULL,
-    bill_date      VARCHAR(20),
-    PRIMARY KEY (bill_id)
 );
 
 \i insert.sql

@@ -12,3 +12,7 @@ INSERT INTO product_detail (product_detail_id, product_id) VALUES
 INSERT INTO product_image (product_image_id, product_detail_id) VALUES
 ('1', 'XD32'),
 ('2', 'XD32');
+
+INSERT INTO discount (discount_id, discount_percent) VALUES
+('XV1', 0.05),
+('HS1', 0.03);
