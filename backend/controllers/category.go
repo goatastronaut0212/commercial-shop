@@ -11,7 +11,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func GetCategoryAll(c *gin.Context) {
+func GetAllCategory(c *gin.Context) {
 	// Get limit
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
@@ -30,7 +30,7 @@ func GetCategoryAll(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindCategoryAll(&limit, &page)
+	data, err := access.FindAllCategory(&limit, &page)
 
 	if err != nil {
 		fmt.Println(err)
@@ -40,9 +40,9 @@ func GetCategoryAll(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-func GetCategoryById(c *gin.Context) {
+func GetCategory(c *gin.Context) {
 	id := c.Param("id")
-	data, err := access.FindCategoryById(&id)
+	data, err := access.FindCategory(&id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get category value"})

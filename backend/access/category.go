@@ -10,7 +10,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindCategoryAll(limit *int, page *int) ([]models.Category, error) {
+func FindAllCategory(limit *int, page *int) ([]models.Category, error) {
 	dataSlice := []models.Category{}
 	data := &models.Category{}
 
@@ -49,7 +49,7 @@ func FindCategoryAll(limit *int, page *int) ([]models.Category, error) {
 	return dataSlice, nil
 }
 
-func FindCategoryById(id *string) (models.Category, error) {
+func FindCategory(id *string) (models.Category, error) {
 	data := &models.Category{}
 
 	// Connect to database and close after executing command

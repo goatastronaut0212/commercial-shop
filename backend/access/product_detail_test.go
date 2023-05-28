@@ -6,24 +6,24 @@ import (
 	"commercial-shop.com/models"
 )
 
-func TestProductDetailFindAll(t *testing.T) {
+func Test_FindAllProductDetail(t *testing.T) {
 	limit := 20
 	page := 1
-	_, err := FindProductDetailAll(&limit, &page)
+	_, err := FindAllProductDetail(&limit, &page)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
-func TestProductDetailFindById(t *testing.T) {
+func Test_FindProductDetail(t *testing.T) {
 	id := "XD32"
-	_, err := FindProductDetailById(&id)
+	_, err := FindProductDetail(&id)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
-func TestProductDetailCreate(t *testing.T) {
+func Test_CreateProductDetail(t *testing.T) {
 	data := models.ProductDetail{
 		Id:          "D39",
 		IdProduct:   "1",
@@ -40,7 +40,7 @@ func TestProductDetailCreate(t *testing.T) {
 	}
 }
 
-func TestProductDetailUpdate(t *testing.T) {
+func Test_UpdateProductDetail(t *testing.T) {
 	data := models.ProductDetail{
 		Id:          "D39",
 		IdProduct:   "1",
@@ -57,7 +57,7 @@ func TestProductDetailUpdate(t *testing.T) {
 	}
 }
 
-func TestProductDetailDelete(t *testing.T) {
+func Test_DeleteProductDetail(t *testing.T) {
 	id := "D39"
 	err := DeleteProductDetail(&id)
 	if err != nil {

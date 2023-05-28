@@ -10,7 +10,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindProductImageAll(limit *int, page *int) ([]models.ProductImage, error) {
+func FindAllProductImage(limit *int, page *int) ([]models.ProductImage, error) {
 	dataSlice := []models.ProductImage{}
 	data := &models.ProductImage{}
 
@@ -49,7 +49,7 @@ func FindProductImageAll(limit *int, page *int) ([]models.ProductImage, error) {
 	return dataSlice, nil
 }
 
-func FindProductImageById(id *string) (models.ProductImage, error) {
+func FindProductImage(id *string) (models.ProductImage, error) {
 	data := &models.ProductImage{}
 
 	// Connect to database and close after executing command

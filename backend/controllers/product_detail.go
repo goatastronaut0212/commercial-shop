@@ -11,7 +11,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func GetProductDetailAll(c *gin.Context) {
+func GetAllProductDetail(c *gin.Context) {
 	// Get limit
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
@@ -30,7 +30,7 @@ func GetProductDetailAll(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindProductDetailAll(&limit, &page)
+	data, err := access.FindAllProductDetail(&limit, &page)
 
 	if err != nil {
 		fmt.Println(err)
@@ -40,9 +40,9 @@ func GetProductDetailAll(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-func GetProductDetailById(c *gin.Context) {
+func GetProductDetail(c *gin.Context) {
 	id := c.Param("id")
-	data, err := access.FindProductDetailById(&id)
+	data, err := access.FindProductDetail(&id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product detail value"})

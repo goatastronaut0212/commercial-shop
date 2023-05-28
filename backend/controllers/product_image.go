@@ -11,7 +11,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func GetProductImageAll(c *gin.Context) {
+func GetAllProductImage(c *gin.Context) {
 	// Get limit
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
@@ -30,7 +30,7 @@ func GetProductImageAll(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindProductImageAll(&limit, &page)
+	data, err := access.FindAllProductImage(&limit, &page)
 
 	if err != nil {
 		fmt.Println(err)
@@ -40,9 +40,9 @@ func GetProductImageAll(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-func GetProductImageById(c *gin.Context) {
+func GetProductImage(c *gin.Context) {
 	id := c.Param("id")
-	data, err := access.FindProductImageById(&id)
+	data, err := access.FindProductImage(&id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product image value"})

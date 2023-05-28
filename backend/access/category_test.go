@@ -6,24 +6,24 @@ import (
 	"commercial-shop.com/models"
 )
 
-func TestCategoryFindAll(t *testing.T) {
+func Test_FindAllCategory(t *testing.T) {
 	limit := 10
 	page := 10
-	_, err := FindCategoryAll(&limit, &page)
+	_, err := FindAllCategory(&limit, &page)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
-func TestCategoryFindById(t *testing.T) {
+func Test_FindCategory(t *testing.T) {
 	id := "1"
-	_, err := FindCategoryById(&id)
+	_, err := FindCategory(&id)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
-func TestCategoryCreate(t *testing.T) {
+func Test_CreateCategory(t *testing.T) {
 	data := models.Category{Id: "3", Name: "Nón"}
 	err := CreateCategory(&data)
 	if err != nil {
@@ -31,7 +31,7 @@ func TestCategoryCreate(t *testing.T) {
 	}
 }
 
-func TestCategoryUpdate(t *testing.T) {
+func Test_UpdateCategory(t *testing.T) {
 	data := models.Category{Id: "3", Name: "Áo khoác"}
 	err := UpdateCategory(&data)
 	if err != nil {
@@ -39,7 +39,7 @@ func TestCategoryUpdate(t *testing.T) {
 	}
 }
 
-func TestCategoryDelete(t *testing.T) {
+func Test_DeleteCategory(t *testing.T) {
 	id := "3"
 	err := DeleteCategory(&id)
 	if err != nil {

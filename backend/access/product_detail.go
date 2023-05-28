@@ -10,7 +10,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindProductDetailAll(limit *int, page *int) ([]models.ProductDetail, error) {
+func FindAllProductDetail(limit *int, page *int) ([]models.ProductDetail, error) {
 	dataSlice := []models.ProductDetail{}
 	data := &models.ProductDetail{}
 
@@ -49,7 +49,7 @@ func FindProductDetailAll(limit *int, page *int) ([]models.ProductDetail, error)
 	return dataSlice, nil
 }
 
-func FindProductDetailById(id *string) (models.ProductDetail, error) {
+func FindProductDetail(id *string) (models.ProductDetail, error) {
 	data := &models.ProductDetail{}
 
 	// Connect to database and close after executing command
