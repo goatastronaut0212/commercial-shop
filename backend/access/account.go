@@ -8,9 +8,9 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindCustomerAll() ([]models.Customer , error) {
-	dataSlice := []models.Customer{}
-	data := &models.Customer{}
+func FindAllAccount() ([]models.Account , error) {
+	dataSlice := []models.Account{}
+	data := &models.Account{}
 
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -20,7 +20,7 @@ func FindCustomerAll() ([]models.Customer , error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT * FROM CUSTOMER;"
+	sql := "SELECT * FROM ACCOUNT;"
 
 	// Get rows from conn with SQL command
 	rows, err := conn.Query(database.CTX, sql)
@@ -30,7 +30,7 @@ func FindCustomerAll() ([]models.Customer , error) {
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan(&data.Id, &data.Name , &data.Phone , &data.Email , &data.Address)
+		err := rows.Scan( &data.UserName , &data.CustomerID , &data.PassWord , &data.DiplayName , &data.RoleID)
 		if err != nil {
 			return nil, err
 		}
@@ -43,8 +43,8 @@ func FindCustomerAll() ([]models.Customer , error) {
 	return dataSlice, nil
 }
 
-func FindCustomer(id *string) (models.Customer, error) {
-	data := &models.Customer{}
+func FindAccount(username *string) (models.Account, error) {
+	data := &models.Account{}
 
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -54,10 +54,10 @@ func FindCustomer(id *string) (models.Customer, error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT * FROM CUSTOMER WHERE customer_id='" + *id + "';"
+	sql := "SELECT * FROM ACCOUNT WHERE account_username='" + *username + "';"
 
 	// Get rows from conn with SQL command
-	err = conn.QueryRow(database.CTX, sql).Scan(&data.Id, &data.Name , &data.Phone , &data.Email , &data.Address);
+	err = conn.QueryRow(database.CTX, sql).Scan(&data.UserName , &data.CustomerID , &data.PassWord , &data.DiplayName , &data.RoleID);
 	if err != nil {
 		return *data, err
 	}
@@ -65,7 +65,7 @@ func FindCustomer(id *string) (models.Customer, error) {
 	return *data, nil
 }
 
-func CreateCustomer(data *models.Customer) error {
+func CreateAccount(data *models.Account) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -74,13 +74,13 @@ func CreateCustomer(data *models.Customer) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "INSERT INTO CUSTOMER VALUES (@id, @name , @phone , @email , @address);"
+	sql := "INSERT INTO ACCOUNT VALUES (@username , @customer_id , @password , @displayname , @roleID );"
 	args := pgx.NamedArgs{
-		"id":         data.Id,
-		"name":       data.Name,
-		"phone":      data.Phone,
-		"email":	  data.Email,
-		"address":    data.Address,
+		"username":         data.UserName,
+		"customer_id":      data.CustomerID,
+		"password":	        data.PassWord,
+		"displayname":      data.DiplayName,
+		"roleID" : 			data.RoleID,
 	}
 
 	// Execute sql command
@@ -92,7 +92,7 @@ func CreateCustomer(data *models.Customer) error {
 	return nil
 }
 
-func UpdateCustomer(data *models.Customer) error {
+func UpdateAccount(data *models.Account) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -101,13 +101,13 @@ func UpdateCustomer(data *models.Customer) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "UPDATE CUSTOMER SET customer_name=@name , customer_phone=@phone , customer_email=@email ,  customer_address=@address WHERE customer_id=@id;"
+	sql := "UPDATE ACCOUNT SET customer_id=@customer_id , account_password=@password , account_displayname=@displayname ,  role_id=@roleID WHERE account_username=@username;"
 	args := pgx.NamedArgs{
-		"id":         data.Id,
-		"name":       data.Name,
-		"phone":      data.Phone,
-		"email":	  data.Email,
-		"address":    data.Address,
+		"username":         data.UserName,
+		"customer_id":      data.CustomerID,
+		"password":	        data.PassWord,
+		"displayname":      data.DiplayName,
+		"roleID" : 			data.RoleID,
 	}
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
@@ -118,7 +118,7 @@ func UpdateCustomer(data *models.Customer) error {
 	return nil
 }
 
-func DeleteCustomer(id *string) error {
+func DeleteAccount(username *string) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -127,7 +127,7 @@ func DeleteCustomer(id *string) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "DELETE FROM CUSTOMER WHERE customer_id='" + *id + "';"
+	sql := "DELETE FROM ACCOUNT WHERE account_username='" + *username + "';"
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql)

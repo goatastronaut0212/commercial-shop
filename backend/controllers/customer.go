@@ -45,27 +45,27 @@ func CreateCustomer(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": "create customer successfully!"})
 }
 
-// func UpdateCategory(c *gin.Context) {
-// 	data := models.Category{}
-// 	c.ShouldBindJSON(&data)
-// 	data.Id = c.Param("id")
+func UpdateCustomer(c *gin.Context) {
+	data := models.Customer{}
+	c.ShouldBindJSON(&data)
+	data.Id = c.Param("id")
 
-// 	err := access.UpdateCategory(&data)
+	err := access.UpdateCustomer(&data)
 
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update category!"})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{"data": "update category successfully!"})
-// }
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update customer!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "update customer successfully!"})
+}
 
-// func DeleteCategory(c *gin.Context) {
-// 	id := c.Param("id")
-// 	err := access.DeleteCategory(&id)
+func DeleteCustomer(c *gin.Context) {
+	id := c.Param("id")
+	err := access.DeleteCustomer(&id)
 
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete category!"})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{"data": "delete category successfully!"})
-// }
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete customer!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete customer successfully!"})
+}
