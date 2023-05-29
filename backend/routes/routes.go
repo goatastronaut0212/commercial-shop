@@ -21,4 +21,5 @@ func getRoutes() {
 	addCustomerRoutes(r)
 	addAccountRoutes(r)
 	addBillInfoRoutes(r)
+	addBillDetailRoutes(r)
 }

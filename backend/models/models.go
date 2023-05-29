@@ -60,3 +60,10 @@ type Bill_Info struct{
 	CustomerID string `json:"CustomerID"    binding:"required"`
 	BillDate   string `json:"BillDate"      binding:"required"`
 }
+
+type Bill_Detail struct{
+	ID          string `json:"id"             binding:"required"`
+	BillID      string `json:"BillID"         binding:"required"`
+	ProductID   string `json:"ProductID"      binding:"required"`
+	DiscountID	string `json:"DiscountID"     binding:"required"`
+}
