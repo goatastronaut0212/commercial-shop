@@ -54,3 +54,9 @@ type Account struct {
 	DiplayName string `json:"displayname"   binding:"required"`
 	RoleID     int    `json:"roleID"        binding:"required"`
 }
+
+type Bill_Info struct{
+	ID         string `json:"id"            binding:"required"`
+	CustomerID string `json:"CustomerID"    binding:"required"`
+	BillDate   string `json:"BillDate"      binding:"required"`
+}
