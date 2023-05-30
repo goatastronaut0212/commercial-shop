@@ -35,9 +35,9 @@ func GetAccount(c *gin.Context) {
 func CreateAccount(c *gin.Context) {
 	data := models.Account{}
 	c.ShouldBindJSON(&data)
-	fmt.Printf(data.UserName);
+
 	err := access.CreateAccount(&data)
-	
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account!"})
 		return
@@ -48,7 +48,7 @@ func CreateAccount(c *gin.Context) {
 func UpdateAccount(c *gin.Context) {
 	data := models.Account{}
 	c.ShouldBindJSON(&data)
-	data.UserName = c.Param("id")
+	data.Username = c.Param("id")
 
 	err := access.UpdateAccount(&data)
 
@@ -58,7 +58,6 @@ func UpdateAccount(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update account successfully!"})
 }
-
 
 func DeleteAccount(c *gin.Context) {
 	id := c.Param("id")

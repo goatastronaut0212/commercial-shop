@@ -36,7 +36,7 @@ func CreateBill_Detail(c *gin.Context) {
 	data := models.Bill_Detail{}
 	c.ShouldBindJSON(&data)
 	err := access.CreateBillDetail(&data)
-	
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create bill detail!"})
 		return
@@ -47,7 +47,7 @@ func CreateBill_Detail(c *gin.Context) {
 func UpdateBill_Detail(c *gin.Context) {
 	data := models.Bill_Detail{}
 	c.ShouldBindJSON(&data)
-	data.ID = c.Param("id")
+	data.Id = c.Param("id")
 
 	err := access.UpdateBillDetail(&data)
 
@@ -57,7 +57,6 @@ func UpdateBill_Detail(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update bill detail successfully!"})
 }
-
 
 func DeleteBill_Detail(c *gin.Context) {
 	id := c.Param("id")

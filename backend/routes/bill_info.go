@@ -7,7 +7,7 @@ import (
 )
 
 func addBillInfoRoutes(rg *gin.RouterGroup) {
-	route := rg.Group("billinfo")
+	route := rg.Group("bill-info")
 
 	route.GET("", controllers.GetAllBill_Info)
 	route.GET("/:id", controllers.GetBill_Info)

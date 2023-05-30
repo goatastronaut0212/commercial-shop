@@ -8,7 +8,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindAllBillDetail() ([]models.Bill_Detail , error) {
+func FindAllBillDetail() ([]models.Bill_Detail, error) {
 	dataSlice := []models.Bill_Detail{}
 	data := &models.Bill_Detail{}
 
@@ -30,7 +30,7 @@ func FindAllBillDetail() ([]models.Bill_Detail , error) {
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan( &data.ID , &data.BillID , &data.ProductID , &data.DiscountID )
+		err := rows.Scan(&data.Id, &data.BillId, &data.ProductId, &data.DiscountId)
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +43,7 @@ func FindAllBillDetail() ([]models.Bill_Detail , error) {
 	return dataSlice, nil
 }
 
-func FindBillDetail(id *string) ([]models.Bill_Detail , error) {
+func FindBillDetail(id *string) ([]models.Bill_Detail, error) {
 	dataSlice := []models.Bill_Detail{}
 	data := &models.Bill_Detail{}
 
@@ -65,7 +65,7 @@ func FindBillDetail(id *string) ([]models.Bill_Detail , error) {
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan( &data.ID , &data.BillID , &data.ProductID , &data.DiscountID )
+		err := rows.Scan(&data.Id, &data.BillId, &data.ProductId, &data.DiscountId)
 		if err != nil {
 			return nil, err
 		}
@@ -89,10 +89,10 @@ func CreateBillDetail(data *models.Bill_Detail) error {
 	// sql as a basic SQL commamd
 	sql := "INSERT INTO BILL_DETAIL VALUES (@id , @bill_id , @product_id , @discount_id );"
 	args := pgx.NamedArgs{
-		"id":               data.ID,
-		"bill_id":          data.BillID,
-		"product_id":	    data.ProductID,
-		"discount_id": 		data.DiscountID,
+		"id":          data.Id,
+		"bill_id":     data.BillId,
+		"product_id":  data.ProductId,
+		"discount_id": data.DiscountId,
 	}
 
 	// Execute sql command
@@ -115,10 +115,10 @@ func UpdateBillDetail(data *models.Bill_Detail) error {
 	// sql as a basic SQL commamd
 	sql := "UPDATE BILL_DETAIL SET bill_id=@bill_id , product_id=@product_id , discount_id=@discount_id WHERE bill_detail_id=@id;"
 	args := pgx.NamedArgs{
-		"id":               data.ID,
-		"bill_id":          data.BillID,
-		"product_id":	    data.ProductID,
-		"discount_id": 		data.DiscountID,
+		"id":          data.Id,
+		"bill_id":     data.BillId,
+		"product_id":  data.ProductId,
+		"discount_id": data.DiscountId,
 	}
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

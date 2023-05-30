@@ -8,7 +8,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindAllAccount() ([]models.Account , error) {
+func FindAllAccount() ([]models.Account, error) {
 	dataSlice := []models.Account{}
 	data := &models.Account{}
 
@@ -30,7 +30,7 @@ func FindAllAccount() ([]models.Account , error) {
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan( &data.UserName , &data.CustomerID , &data.PassWord , &data.DiplayName , &data.RoleID)
+		err := rows.Scan(&data.Username, &data.CustomerId, &data.Password, &data.DisplayName, &data.RoleID)
 		if err != nil {
 			return nil, err
 		}
@@ -57,7 +57,7 @@ func FindAccount(username *string) (models.Account, error) {
 	sql := "SELECT * FROM ACCOUNT WHERE account_username='" + *username + "';"
 
 	// Get rows from conn with SQL command
-	err = conn.QueryRow(database.CTX, sql).Scan(&data.UserName , &data.CustomerID , &data.PassWord , &data.DiplayName , &data.RoleID);
+	err = conn.QueryRow(database.CTX, sql).Scan(&data.Username, &data.CustomerId, &data.Password, &data.DisplayName, &data.RoleID)
 	if err != nil {
 		return *data, err
 	}
@@ -74,13 +74,13 @@ func CreateAccount(data *models.Account) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "INSERT INTO ACCOUNT VALUES (@username , @customer_id , @password , @displayname , @roleID );"
+	sql := "INSERT INTO ACCOUNT VALUES (@username, @customer_id, @password, @display_name, @role_id);"
 	args := pgx.NamedArgs{
-		"username":         data.UserName,
-		"customer_id":      data.CustomerID,
-		"password":	        data.PassWord,
-		"displayname":      data.DiplayName,
-		"roleID" : 			data.RoleID,
+		"username":     data.Username,
+		"customer_id":  data.CustomerId,
+		"password":     data.Password,
+		"display_name": data.DisplayName,
+		"role_id":      data.RoleID,
 	}
 
 	// Execute sql command
@@ -103,11 +103,11 @@ func UpdateAccount(data *models.Account) error {
 	// sql as a basic SQL commamd
 	sql := "UPDATE ACCOUNT SET customer_id=@customer_id , account_password=@password , account_displayname=@displayname ,  role_id=@roleID WHERE account_username=@username;"
 	args := pgx.NamedArgs{
-		"username":         data.UserName,
-		"customer_id":      data.CustomerID,
-		"password":	        data.PassWord,
-		"displayname":      data.DiplayName,
-		"roleID" : 			data.RoleID,
+		"username":     data.Username,
+		"customer_id":  data.CustomerId,
+		"password":     data.Password,
+		"display_name": data.DisplayName,
+		"role_id":      data.RoleID,
 	}
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

@@ -8,7 +8,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindAllBillInfo() ([]models.Bill_Info , error) {
+func FindAllBillInfo() ([]models.Bill_Info, error) {
 	dataSlice := []models.Bill_Info{}
 	data := &models.Bill_Info{}
 
@@ -30,7 +30,7 @@ func FindAllBillInfo() ([]models.Bill_Info , error) {
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan( &data.ID , &data.CustomerID , &data.BillDate )
+		err := rows.Scan(&data.Id, &data.CustomerId, &data.BillDate)
 		if err != nil {
 			return nil, err
 		}
@@ -57,7 +57,7 @@ func FindBillInfo(id *string) (models.Bill_Info, error) {
 	sql := "SELECT * FROM BILL_INFO WHERE bill_id='" + *id + "';"
 
 	// Get rows from conn with SQL command
-	err = conn.QueryRow(database.CTX, sql).Scan(&data.ID , &data.CustomerID , &data.BillDate );
+	err = conn.QueryRow(database.CTX, sql).Scan(&data.Id, &data.CustomerId, &data.BillDate)
 	if err != nil {
 		return *data, err
 	}
@@ -76,9 +76,9 @@ func CreateBillInfo(data *models.Bill_Info) error {
 	// sql as a basic SQL commamd
 	sql := "INSERT INTO BILL_INFO VALUES (@id , @customer_id , @billdate );"
 	args := pgx.NamedArgs{
-		"id":               data.ID,
-		"customer_id":      data.CustomerID,
-		"billdate":	        data.BillDate,
+		"id":          data.Id,
+		"customer_id": data.CustomerId,
+		"billdate":    data.BillDate,
 	}
 
 	// Execute sql command
@@ -101,9 +101,9 @@ func UpdateBillInfo(data *models.Bill_Info) error {
 	// sql as a basic SQL commamd
 	sql := "UPDATE BILL_INFO SET customer_id=@customer_id , bill_date=@billdate WHERE bill_id=@id;"
 	args := pgx.NamedArgs{
-		"id":               data.ID,
-		"customer_id":      data.CustomerID,
-		"billdate":	        data.BillDate,
+		"id":          data.Id,
+		"customer_id": data.CustomerId,
+		"billdate":    data.BillDate,
 	}
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
