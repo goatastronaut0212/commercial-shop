@@ -37,3 +37,32 @@ type ProductImage struct {
 	IdProductDetail string `json:"idProductDetail" binding:"required"`
 	Image           []byte `json:"image"           binding:"required"`
 }
+
+type Customer struct {
+	Id      string `json:"id"         binding:"required"`
+	Name    string `json:"name"       binding:"required"`
+	Phone   string `json:"phone"      binding:"required"`
+	Email   string `json:"email"      binding:"required"`
+	Address string `json:"address"    binding:"required"`
+}
+
+type Account struct {
+	Username    string `json:"username"      binding:"required"`
+	CustomerId  string `json:"customerId"    binding:"required"`
+	Password    string `json:"password"      binding:"required"`
+	DisplayName string `json:"displayName"   binding:"required"`
+	RoleID      int    `json:"roleID"        binding:"required"`
+}
+
+type Bill_Info struct {
+	Id         string `json:"id"            binding:"required"`
+	CustomerId string `json:"customerId"    binding:"required"`
+	BillDate   string `json:"billDate"      binding:"required"`
+}
+
+type Bill_Detail struct {
+	Id         string `json:"id"             binding:"required"`
+	BillId     string `json:"billId"         binding:"required"`
+	ProductId  string `json:"productId"      binding:"required"`
+	DiscountId string `json:"discountId"     binding:"required"`
+}
