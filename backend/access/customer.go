@@ -1,6 +1,8 @@
 package access
 
 import (
+	"strconv"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -8,7 +10,7 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindCustomerAll() ([]models.Customer , error) {
+func FindAllCustomer(limit *int, page *int) ([]models.Customer, error) {
 	dataSlice := []models.Customer{}
 	data := &models.Customer{}
 
@@ -20,17 +22,21 @@ func FindCustomerAll() ([]models.Customer , error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT * FROM CUSTOMER;"
+	sql := "SELECT * FROM customer ORDER BY customer_id LIMIT @limit OFFSET @offset;"
+	args := pgx.NamedArgs{
+		"limit":  strconv.Itoa(*limit),
+		"offset": strconv.Itoa(*limit * (*page - 1)),
+	}
 
 	// Get rows from conn with SQL command
-	rows, err := conn.Query(database.CTX, sql)
+	rows, err := conn.Query(database.CTX, sql, args)
 	if err != nil {
 		return nil, err
 	}
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan(&data.Id, &data.Name , &data.Phone , &data.Email , &data.Address)
+		err := rows.Scan(&data.Id, &data.Name, &data.Phone, &data.Email, &data.Address)
 		if err != nil {
 			return nil, err
 		}
@@ -57,7 +63,7 @@ func FindCustomer(id *string) (models.Customer, error) {
 	sql := "SELECT * FROM CUSTOMER WHERE customer_id='" + *id + "';"
 
 	// Get rows from conn with SQL command
-	err = conn.QueryRow(database.CTX, sql).Scan(&data.Id, &data.Name , &data.Phone , &data.Email , &data.Address);
+	err = conn.QueryRow(database.CTX, sql).Scan(&data.Id, &data.Name, &data.Phone, &data.Email, &data.Address)
 	if err != nil {
 		return *data, err
 	}
@@ -76,11 +82,11 @@ func CreateCustomer(data *models.Customer) error {
 	// sql as a basic SQL commamd
 	sql := "INSERT INTO CUSTOMER VALUES (@id, @name , @phone , @email , @address);"
 	args := pgx.NamedArgs{
-		"id":         data.Id,
-		"name":       data.Name,
-		"phone":      data.Phone,
-		"email":	  data.Email,
-		"address":    data.Address,
+		"id":      data.Id,
+		"name":    data.Name,
+		"phone":   data.Phone,
+		"email":   data.Email,
+		"address": data.Address,
 	}
 
 	// Execute sql command
@@ -103,11 +109,11 @@ func UpdateCustomer(data *models.Customer) error {
 	// sql as a basic SQL commamd
 	sql := "UPDATE CUSTOMER SET customer_name=@name , customer_phone=@phone , customer_email=@email ,  customer_address=@address WHERE customer_id=@id;"
 	args := pgx.NamedArgs{
-		"id":         data.Id,
-		"name":       data.Name,
-		"phone":      data.Phone,
-		"email":	  data.Email,
-		"address":    data.Address,
+		"id":      data.Id,
+		"name":    data.Name,
+		"phone":   data.Phone,
+		"email":   data.Email,
+		"address": data.Address,
 	}
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

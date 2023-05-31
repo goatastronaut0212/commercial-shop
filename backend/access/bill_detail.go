@@ -1,6 +1,8 @@
 package access
 
 import (
+	"strconv"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -8,9 +10,9 @@ import (
 	"commercial-shop.com/models"
 )
 
-func FindAllBillDetail() ([]models.Bill_Detail, error) {
-	dataSlice := []models.Bill_Detail{}
-	data := &models.Bill_Detail{}
+func FindAllBillDetail(limit *int, page *int) ([]models.BillDetail, error) {
+	dataSlice := []models.BillDetail{}
+	data := &models.BillDetail{}
 
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -20,17 +22,21 @@ func FindAllBillDetail() ([]models.Bill_Detail, error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT * FROM BILL_DETAIL;"
+	sql := "SELECT * FROM BILL_DETAIL ORDER BY bill_detail_id LIMIT @limit OFFSET @offset"
+	args := pgx.NamedArgs{
+		"limit":  strconv.Itoa(*limit),
+		"offset": strconv.Itoa(*limit * (*page - 1)),
+	}
 
 	// Get rows from conn with SQL command
-	rows, err := conn.Query(database.CTX, sql)
+	rows, err := conn.Query(database.CTX, sql, args)
 	if err != nil {
 		return nil, err
 	}
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan(&data.Id, &data.BillId, &data.ProductId, &data.DiscountId)
+		err := rows.Scan(&data.Id, &data.BillId, &data.ProductId, &data.DiscountId, &data.Amount)
 		if err != nil {
 			return nil, err
 		}
@@ -43,9 +49,9 @@ func FindAllBillDetail() ([]models.Bill_Detail, error) {
 	return dataSlice, nil
 }
 
-func FindBillDetail(id *string) ([]models.Bill_Detail, error) {
-	dataSlice := []models.Bill_Detail{}
-	data := &models.Bill_Detail{}
+func FindBillDetail(id *string) ([]models.BillDetail, error) {
+	dataSlice := []models.BillDetail{}
+	data := &models.BillDetail{}
 
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -65,7 +71,7 @@ func FindBillDetail(id *string) ([]models.Bill_Detail, error) {
 
 	// convert each rows to struct and append to Slice to return
 	for rows.Next() {
-		err := rows.Scan(&data.Id, &data.BillId, &data.ProductId, &data.DiscountId)
+		err := rows.Scan(&data.Id, &data.BillId, &data.ProductId, &data.DiscountId, &data.Amount)
 		if err != nil {
 			return nil, err
 		}
@@ -78,7 +84,7 @@ func FindBillDetail(id *string) ([]models.Bill_Detail, error) {
 	return dataSlice, nil
 }
 
-func CreateBillDetail(data *models.Bill_Detail) error {
+func CreateBillDetail(data *models.BillDetail) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -87,12 +93,13 @@ func CreateBillDetail(data *models.Bill_Detail) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "INSERT INTO BILL_DETAIL VALUES (@id , @bill_id , @product_id , @discount_id );"
+	sql := "INSERT INTO BILL_DETAIL VALUES (@id , @bill_id , @product_id , @discount_id, @amount);"
 	args := pgx.NamedArgs{
 		"id":          data.Id,
 		"bill_id":     data.BillId,
 		"product_id":  data.ProductId,
 		"discount_id": data.DiscountId,
+		"amount":      data.Amount,
 	}
 
 	// Execute sql command
@@ -104,7 +111,7 @@ func CreateBillDetail(data *models.Bill_Detail) error {
 	return nil
 }
 
-func UpdateBillDetail(data *models.Bill_Detail) error {
+func UpdateBillDetail(data *models.BillDetail) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -113,12 +120,13 @@ func UpdateBillDetail(data *models.Bill_Detail) error {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "UPDATE BILL_DETAIL SET bill_id=@bill_id , product_id=@product_id , discount_id=@discount_id WHERE bill_detail_id=@id;"
+	sql := "UPDATE BILL_DETAIL SET bill_id=@bill_id , product_id=@product_id , discount_id=@discount_id, bill_amount=@amount WHERE bill_detail_id=@id;"
 	args := pgx.NamedArgs{
 		"id":          data.Id,
 		"bill_id":     data.BillId,
 		"product_id":  data.ProductId,
 		"discount_id": data.DiscountId,
+		"amount":      data.Amount,
 	}
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

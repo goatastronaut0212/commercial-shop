@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,7 +12,25 @@ import (
 )
 
 func GetAllBill_Info(c *gin.Context) {
-	data, err := access.FindAllBillInfo()
+	// Get limit
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil {
+		limit = 20
+	}
+	if limit <= 0 {
+		limit = 20
+	}
+
+	// Get page
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page <= 0 {
+		page = 1
+	}
+
+	data, err := access.FindAllBillInfo(&limit, &page)
 
 	if err != nil {
 		fmt.Println(err)
@@ -33,7 +52,7 @@ func GetBill_Info(c *gin.Context) {
 }
 
 func CreateBillInfo(c *gin.Context) {
-	data := models.Bill_Info{}
+	data := models.BillInfo{}
 	c.ShouldBindJSON(&data)
 	err := access.CreateBillInfo(&data)
 
@@ -45,7 +64,7 @@ func CreateBillInfo(c *gin.Context) {
 }
 
 func UpdateBillInfo(c *gin.Context) {
-	data := models.Bill_Info{}
+	data := models.BillInfo{}
 	c.ShouldBindJSON(&data)
 	data.Id = c.Param("id")
 

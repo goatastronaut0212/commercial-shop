@@ -22,7 +22,7 @@ func FindAllDiscount(limit *int, page *int) ([]models.Discount, error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT discount_id, discount_description, discount_percent, discount_date_start, discount_date_end FROM discount ORDER BY discount_id LIMIT @limit OFFSET @offset;"
+	sql := "SELECT * FROM discount ORDER BY discount_id LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),

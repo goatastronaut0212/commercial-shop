@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -10,8 +11,26 @@ import (
 	"commercial-shop.com/models"
 )
 
-func GetAllBill_Detail(c *gin.Context) {
-	data, err := access.FindAllBillDetail()
+func GetAllBillDetail(c *gin.Context) {
+	// Get limit
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil {
+		limit = 20
+	}
+	if limit <= 0 {
+		limit = 20
+	}
+
+	// Get page
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page <= 0 {
+		page = 1
+	}
+
+	data, err := access.FindAllBillDetail(&limit, &page)
 
 	if err != nil {
 		fmt.Println(err)
@@ -21,7 +40,7 @@ func GetAllBill_Detail(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-func GetBill_Detail(c *gin.Context) {
+func GetBillDetail(c *gin.Context) {
 	id := c.Param("id")
 	data, err := access.FindBillDetail(&id)
 
@@ -32,8 +51,8 @@ func GetBill_Detail(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-func CreateBill_Detail(c *gin.Context) {
-	data := models.Bill_Detail{}
+func CreateBillDetail(c *gin.Context) {
+	data := models.BillDetail{}
 	c.ShouldBindJSON(&data)
 	err := access.CreateBillDetail(&data)
 
@@ -44,8 +63,8 @@ func CreateBill_Detail(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": "create bill detail successfully!"})
 }
 
-func UpdateBill_Detail(c *gin.Context) {
-	data := models.Bill_Detail{}
+func UpdateBillDetail(c *gin.Context) {
+	data := models.BillDetail{}
 	c.ShouldBindJSON(&data)
 	data.Id = c.Param("id")
 
@@ -58,7 +77,7 @@ func UpdateBill_Detail(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": "update bill detail successfully!"})
 }
 
-func DeleteBill_Detail(c *gin.Context) {
+func DeleteBillDetail(c *gin.Context) {
 	id := c.Param("id")
 	err := access.DeleteBillDetail(&id)
 

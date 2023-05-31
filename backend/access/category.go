@@ -22,7 +22,7 @@ func FindAllCategory(limit *int, page *int) ([]models.Category, error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT category_id, category_name FROM category ORDER BY category_id LIMIT @limit OFFSET @offset;"
+	sql := "SELECT * FROM category ORDER BY category_id LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),

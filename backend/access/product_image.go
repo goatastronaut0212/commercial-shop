@@ -22,7 +22,7 @@ func FindAllProductImage(limit *int, page *int) ([]models.ProductImage, error) {
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT product_image_id, product_detail_id, product_image FROM product_image ORDER BY product_image_id LIMIT @limit OFFSET @offset;"
+	sql := "SELECT * FROM product_image ORDER BY product_image_id LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),

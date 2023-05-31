@@ -22,7 +22,7 @@ func FindAllProductDetail(limit *int, page *int) ([]models.ProductDetail, error)
 	defer conn.Close()
 
 	// sql as a basic SQL commamd
-	sql := "SELECT product_detail_id, product_id, product_color, product_fabric, product_size, product_price, product_amount, product_description FROM product_detail ORDER BY product_detail_id LIMIT @limit OFFSET @offset;"
+	sql := "SELECT * FROM product_detail ORDER BY product_detail_id LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),
