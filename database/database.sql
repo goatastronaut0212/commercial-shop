@@ -2,23 +2,23 @@ CREATE DATABASE shopdb;
 
 \c shopdb;
 
-CREATE TABLE category (
+CREATE TABLE Category (
     category_id    VARCHAR(20) NOT NULL,
-    category_name  VARCHAR(100),
+    category_name  VARCHAR(100) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (category_id)
 );
 
-CREATE TABLE product (
+CREATE TABLE Product (
     product_id      VARCHAR(20)  NOT NULL,
     category_id     VARCHAR(20)  NOT NULL,
-    product_name    VARCHAR(20)  DEFAULT 'Chưa có thông tin',
+    product_name    VARCHAR(100)  DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (product_id),
     CONSTRAINT fk_category_id_for_product
         FOREIGN KEY (category_id)
-        REFERENCES category(category_id)
+        REFERENCES Category(category_id)
 );
 
-CREATE TABLE product_detail (
+CREATE TABLE ProductDetail (
     product_detail_id    VARCHAR(20)  NOT NUll,
     product_id           VARCHAR(20)  NOT NULL,
     product_color        VARCHAR(20)  DEFAULT 'Chưa có thông tin',
@@ -30,29 +30,29 @@ CREATE TABLE product_detail (
     PRIMARY KEY (product_detail_id),
     CONSTRAINT fk_product_id_for_product_detail
         FOREIGN KEY (product_id)
-        REFERENCES product(product_id)
+        REFERENCES Product(product_id)
 );
 
-CREATE TABLE product_image (
+CREATE TABLE ProductImage (
     product_image_id   VARCHAR(20) NOT NULL,
     product_detail_id  VARCHAR(20) NOT NULL,
     product_image      BYTEA,
     PRIMARY KEY (product_image_id),
     CONSTRAINT fk_product_detail_id_for_product_image
         FOREIGN KEY (product_detail_id)
-        REFERENCES product_detail(product_detail_id)
+        REFERENCES ProductDetail(product_detail_id)
 );
 
-CREATE TABLE customer (
-    customer_id      VARCHAR(20) NOT NULL,
-    customer_name    VARCHAR(50),
-    customer_phone   VARCHAR(20),
-    customer_email   VARCHAR(20), 
-    customer_address VARCHAR(100),
+CREATE TABLE Customer (
+    customer_id      VARCHAR(20)  NOT NULL,
+    customer_name    VARCHAR(50)  DEFAULT 'Chưa có thông tin',
+    customer_phone   VARCHAR(20)  DEFAULT 'Chưa có thông tin',
+    customer_email   VARCHAR(100) DEFAULT 'Chưa có thông tin', 
+    customer_address VARCHAR(100) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (customer_id)
 );
 
-CREATE TABLE account (
+CREATE TABLE Account (
     account_username    VARCHAR(20) NOT NULL,
     customer_id         VARCHAR(20) NOT NULL,
     account_password    VARCHAR(20),
@@ -61,10 +61,10 @@ CREATE TABLE account (
     PRIMARY KEY (account_username),
     CONSTRAINT fk_customer_id_for_account
         FOREIGN KEY (customer_id)
-        REFERENCES customer(customer_id)
+        REFERENCES Customer(customer_id)
 );
 
-CREATE TABLE discount (
+CREATE TABLE Discount (
     discount_id          VARCHAR(20)  NOT NULL,
     discount_description VARCHAR(200) DEFAULT 'Chưa có thông tin',
     discount_percent     REAL         DEFAULT 0.0,
@@ -73,7 +73,7 @@ CREATE TABLE discount (
     PRIMARY KEY (discount_id)
 );
 
-CREATE TABLE bill_info (
+CREATE TABLE BillInfo (
     bill_id        VARCHAR(20) NOT NULL,
     customer_id    VARCHAR(20) NOT NULL,
     bill_date      VARCHAR(20) DEFAULT NOW(),
@@ -82,22 +82,22 @@ CREATE TABLE bill_info (
     PRIMARY KEY (bill_id),
     CONSTRAINT fk_customer_id_for_bill_info
         FOREIGN KEY (customer_id)
-        REFERENCES customer(customer_id)
+        REFERENCES Customer(customer_id)
 );
 
-CREATE TABLE bill_detail (
-    bill_detail_id VARCHAR(20) NOT NULL,
-    bill_id        VARCHAR(20) NOT NULL,
-    product_id     VARCHAR(20) NOT NULL,
-    discount_id    VARCHAR(20) NOT NULL,
-    bill_amount    INT         CHECK (bill_amount > 0),
+CREATE TABLE BillDetail (
+    bill_detail_id     VARCHAR(20) NOT NULL,
+    bill_id            VARCHAR(20) NOT NULL,
+    product_detail_id  VARCHAR(20) NOT NULL,
+    discount_id        VARCHAR(20) NOT NULL,
+    bill_amount        INT         CHECK (bill_amount > 0),
     PRIMARY KEY (bill_detail_id),
     CONSTRAINT fk_bill_id_for_bill_detail
         FOREIGN KEY (bill_id)
-        REFERENCES bill_info(bill_id),
-    CONSTRAINT fk_product_id_for_bill_detail
-        FOREIGN KEY (product_id)
-        REFERENCES product(product_id)
+        REFERENCES BillInfo(bill_id),
+    CONSTRAINT fk_product_detail_id_for_bill_detail
+        FOREIGN KEY (product_detail_id)
+        REFERENCES ProductDetail(product_detail_id)
 );
 
 \i insert.sql
