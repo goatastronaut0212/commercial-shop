@@ -8,17 +8,30 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"commercial-shop.com/access"
-	"commercial-shop.com/models"
+	"commercial-shop.com/services"
 )
+
+func GetCustomer(c *gin.Context) {
+	data := services.CustomerService{Items: []services.Customer{{
+		Id: c.Param("id"),
+	}}}
+	err := data.Get()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get customer value"})
+		return
+	}
+	c.JSON(http.StatusOK, data.Items)
+}
 
 func GetAllCustomer(c *gin.Context) {
 	// Get limit
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		limit = 20
+		limit = 10
 	}
 	if limit <= 0 {
-		limit = 20
+		limit = 10
 	}
 
 	// Get page
@@ -30,46 +43,43 @@ func GetAllCustomer(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindAllCustomer(&limit, &page)
+	data := services.CustomerService{}
+	err = data.GetAll(&limit, &page)
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all customer value"})
 		return
 	}
 	c.JSON(http.StatusOK, data)
 }
 
-func GetCustomer(c *gin.Context) {
-	id := c.Param("id")
-	data, err := access.FindCustomer(&id)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get category value"})
-		return
-	}
-	c.JSON(http.StatusOK, data)
-}
-
 func CreateCustomer(c *gin.Context) {
-	data := models.Customer{}
-	c.ShouldBindJSON(&data)
+	// Get input
+	input := services.Customer{}
+	c.ShouldBindJSON(&input)
+	fmt.Println(input)
 
-	err := access.CreateCustomer(&data)
+	// Assign to data and create
+	data := services.CustomerService{Items: []services.Customer{input}}
+	err := data.Create()
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create category!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create customer!"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "create customer successfully!"})
 }
 
 func UpdateCustomer(c *gin.Context) {
-	data := models.Customer{}
-	c.ShouldBindJSON(&data)
-	data.Id = c.Param("id")
+	// Get input
+	input := services.Customer{}
+	c.ShouldBindJSON(&input)
+	fmt.Println(input)
 
-	err := access.UpdateCustomer(&data)
+	// Assign to data and create
+	data := services.CustomerService{Items: []services.Customer{input}}
+	fmt.Println(data)
+	err := data.Update()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update customer!"})

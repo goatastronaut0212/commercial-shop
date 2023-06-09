@@ -7,18 +7,28 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"commercial-shop.com/access"
-	"commercial-shop.com/models"
+	"commercial-shop.com/services"
 )
+
+func GetProduct(c *gin.Context) {
+	data := services.ProductService{Items: []services.Product{{Id: c.Param("id")}}}
+	err := data.Get()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product value"})
+		return
+	}
+	c.JSON(http.StatusOK, data)
+}
 
 func GetAllProduct(c *gin.Context) {
 	// Get limit
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		limit = 20
+		limit = 10
 	}
 	if limit <= 0 {
-		limit = 20
+		limit = 10
 	}
 
 	// Get page
@@ -30,31 +40,26 @@ func GetAllProduct(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindAllProduct(&limit, &page)
+	data := services.ProductService{}
+	err = data.GetAll(&limit, &page)
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all product value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
-}
-
-func GetProduct(c *gin.Context) {
-	id := c.Param("id")
-	data, err := access.FindProduct(&id)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product value"})
-		return
-	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func CreateProduct(c *gin.Context) {
-	data := models.Product{}
-	c.ShouldBindJSON(&data)
-	err := access.CreateProduct(&data)
+	// Get input
+	input := services.Product{}
+	c.ShouldBindJSON(&input)
+	fmt.Println(input)
+
+	// Assign to data and create
+	data := services.ProductService{Items: []services.Product{input}}
+	fmt.Println(data)
+	err := data.Create()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product!"})
@@ -64,11 +69,14 @@ func CreateProduct(c *gin.Context) {
 }
 
 func UpdateProduct(c *gin.Context) {
-	data := models.Product{}
-	c.ShouldBindJSON(&data)
-	data.Id = c.Param("id")
+	// Get input
+	input := services.Product{}
+	c.ShouldBindJSON(&input)
+	input.Id = c.Param("id")
 
-	err := access.UpdateProduct(&data)
+	// Assign to data and update
+	data := services.ProductService{Items: []services.Product{input}}
+	err := data.Update()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product!"})
@@ -78,8 +86,10 @@ func UpdateProduct(c *gin.Context) {
 }
 
 func DeleteProduct(c *gin.Context) {
-	id := c.Param("id")
-	err := access.DeleteProduct(&id)
+	data := services.ProductService{Items: []services.Product{{
+		Id: c.Param("id"),
+	}}}
+	err := data.Delete()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product!"})

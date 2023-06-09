@@ -17,9 +17,9 @@ func getRoutes() {
 	addBillDetailRoutes(r)
 	addBillInfoRoutes(r)
 	addCategoryRoutes(r)
+	addCustomerRoutes(r)
 	addDiscountRoutes(r)
 	addProductRoutes(r)
 	addProductDetailRoutes(r)
 	addProductImageRoutes(r)
-	addCustomerRoutes(r)
 }
