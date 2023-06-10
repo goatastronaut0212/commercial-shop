@@ -76,7 +76,7 @@ CREATE TABLE Discount (
 CREATE TABLE BillInfo (
     bill_id        VARCHAR(20) NOT NULL,
     customer_id    VARCHAR(20) NOT NULL,
-    bill_date      VARCHAR(20) DEFAULT NOW(),
+    bill_date      DATE        DEFAULT NOW(),
     bill_status    INT         CHECK (bill_status=0 OR bill_status=1 OR bill_status=2 OR bill_status=3 OR bill_status=4) DEFAULT 0,
     bill_payment   INT         CHECK (bill_payment=0 OR bill_payment=1) DEFAULT 0,
     PRIMARY KEY (bill_id),
