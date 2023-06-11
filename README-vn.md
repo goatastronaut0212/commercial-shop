@@ -14,9 +14,17 @@ nghiệp. Tự phát minh cho bản thân
 **Quan trọng:** 1 web server đầy đủ tính năng cơ bản cho phục vụ thương mại
 điện tử trong việc bán quần áo.
 
+Người dùng
++ Đặt hàng, tìm kiếm và xem hàng
++ Tương tác được với các 
+
+Admin
++ Thêm, sửa, xóa, quản lý database và các bảng
++ Quản lý server
+
 **Lưu ý:** Khách hàng sử dụng phần mềm không phải là 1 người mù tịt hoàn
 toàn về công nghệ thông tin cũng như quá cổ hủ chỉ muốn vấn đề giải quyết đơn
-giản gọn lẹ. Nếu muốn đơn giản dễ sử dụng và quản lý.
+giản gọn lẹ. Nếu muốn đơn giản dễ sử dụng và quản lý thì cầ phải nói lại sau.
 
 **Đề xuất mục tiêu khác:**
 + Bảo mật web server
