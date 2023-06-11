@@ -11,19 +11,19 @@ type Account struct {
 }
 
 type BillInfo struct {
-	Id         string `json:"id"            binding:"required"`
-	CustomerId string `json:"customerId"    binding:"required"`
-	Date       string `json:"billDate"      binding:"required"`
-	Status     int    `json:"status"        binding:"required"`
-	Payment    int    `json:"payment"       binding:"required"`
+	Id         string    `json:"id"            binding:"required"`
+	CustomerId string    `json:"customerId"    binding:"required"`
+	Date       time.Time `json:"date"          binding:"required"`
+	Status     int       `json:"status"        binding:"required"`
+	Payment    int       `json:"payment"       binding:"required"`
 }
 
 type BillDetail struct {
-	Id         string `json:"id"             binding:"required"`
-	BillId     string `json:"billId"         binding:"required"`
-	ProductId  string `json:"productId"      binding:"required"`
-	DiscountId string `json:"discountId"     binding:"required"`
-	Amount     int    `json:"amount"         binding:"required"`
+	Id              string `json:"id"             binding:"required"`
+	BillId          string `json:"billId"         binding:"required"`
+	ProductDetailId string `json:"productDetailId"      binding:"required"`
+	DiscountId      string `json:"discountId"     binding:"required"`
+	Amount          int    `json:"amount"         binding:"required"`
 }
 
 type Category struct {

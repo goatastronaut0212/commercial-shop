@@ -2,14 +2,15 @@ package services
 
 import (
 	"testing"
+	"time"
 
 	"commercial-shop.com/models"
 )
 
-func Test_GetCustomer(t *testing.T) {
+func Test_GetDiscount(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := DiscountService{Items: []models.Discount{{
+		Id: "XV1",
 	}}}
 
 	// Execute method and if error happen send error
@@ -19,11 +20,11 @@ func Test_GetCustomer(t *testing.T) {
 	}
 }
 
-func Test_GetAllCustomer(t *testing.T) {
+func Test_GetAllDiscount(t *testing.T) {
 	// Create limit, page, service and assign to data
 	limit := 10
 	page := 1
-	data := CustomerService{}
+	data := DiscountService{}
 
 	// Execute method and if error happen send error
 	err := data.GetAll(&limit, &page)
@@ -31,18 +32,15 @@ func Test_GetAllCustomer(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 }
-
-func Test_CreateCustomer(t *testing.T) {
+func Test_CreateDiscount(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "none",
-			Email:   "jsjsjsjsjs@sasas.com",
-			Address: "TP HCM",
-		}},
-	}
+	data := DiscountService{Items: []models.Discount{{
+		Id:          "TestN",
+		Description: "Thông tin chưa cập nhập",
+		Percent:     0.25,
+		DateStart:   time.Now(),
+		DateEnd:     time.Now(),
+	}}}
 
 	// Execute method and if error happen send error
 	err := data.Create()
@@ -51,17 +49,15 @@ func Test_CreateCustomer(t *testing.T) {
 	}
 }
 
-func Test_UpdateCustomer(t *testing.T) {
+func Test_UpdateDiscount(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "0111432389",
-			Email:   "jsjsjsjsjs@sasas.com",
-			Address: "TP HCM",
-		}},
-	}
+	data := DiscountService{Items: []models.Discount{{
+		Id:          "TestN",
+		Description: "Thông tin chưa cập nhập",
+		Percent:     0.2,
+		DateStart:   time.Now(),
+		DateEnd:     time.Now(),
+	}}}
 
 	// Execute method and if error happen send error
 	err := data.Update()
@@ -70,10 +66,10 @@ func Test_UpdateCustomer(t *testing.T) {
 	}
 }
 
-func Test_DeleteCustomer(t *testing.T) {
+func Test_DeleteDiscount(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := DiscountService{Items: []models.Discount{{
+		Id: "TestN",
 	}}}
 
 	// Execute method and if error happen send error

@@ -1,24 +1,28 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
+	"commercial-shop.com/models"
 	"commercial-shop.com/services"
 )
 
 func GetProduct(c *gin.Context) {
-	data := services.ProductService{Items: []services.Product{{Id: c.Param("id")}}}
-	err := data.Get()
+	// Create service and assign to data
+	data := services.ProductService{Items: []models.Product{{
+		Id: c.Param("id"),
+	}}}
 
+	// Execute method and send status request to user
+	err := data.Get()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func GetAllProduct(c *gin.Context) {
@@ -40,9 +44,10 @@ func GetAllProduct(c *gin.Context) {
 		page = 1
 	}
 
+	// Create service and assign to data
+	// Then execute method and send status request to user
 	data := services.ProductService{}
 	err = data.GetAll(&limit, &page)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all product value"})
 		return
@@ -51,16 +56,12 @@ func GetAllProduct(c *gin.Context) {
 }
 
 func CreateProduct(c *gin.Context) {
-	// Get input
-	input := services.Product{}
-	c.ShouldBindJSON(&input)
-	fmt.Println(input)
+	// Create service and assign to data
+	data := services.ProductService{Items: []models.Product{{}}}
+	c.ShouldBindJSON(&data.Items[0])
 
-	// Assign to data and create
-	data := services.ProductService{Items: []services.Product{input}}
-	fmt.Println(data)
+	// Execute method and send status request to user
 	err := data.Create()
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product!"})
 		return
@@ -69,15 +70,13 @@ func CreateProduct(c *gin.Context) {
 }
 
 func UpdateProduct(c *gin.Context) {
-	// Get input
-	input := services.Product{}
-	c.ShouldBindJSON(&input)
-	input.Id = c.Param("id")
+	// Create service and assign to data
+	data := services.ProductService{Items: []models.Product{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+	data.Items[0].Id = c.Param("id")
 
-	// Assign to data and update
-	data := services.ProductService{Items: []services.Product{input}}
+	// Execute method and send status request to user
 	err := data.Update()
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product!"})
 		return
@@ -86,11 +85,13 @@ func UpdateProduct(c *gin.Context) {
 }
 
 func DeleteProduct(c *gin.Context) {
-	data := services.ProductService{Items: []services.Product{{
+	// Create service and assign to data
+	data := services.ProductService{Items: []models.Product{{
 		Id: c.Param("id"),
 	}}}
-	err := data.Delete()
 
+	// Execute method and send status request to user
+	err := data.Delete()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product!"})
 		return

@@ -1,22 +1,23 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"commercial-shop.com/access"
+	"commercial-shop.com/models"
 	"commercial-shop.com/services"
 )
 
 func GetCustomer(c *gin.Context) {
-	data := services.CustomerService{Items: []services.Customer{{
+	// Create service and assign to data
+	data := services.CustomerService{Items: []models.Customer{{
 		Id: c.Param("id"),
 	}}}
-	err := data.Get()
 
+	// Execute method and send status request to user
+	err := data.Get()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get customer value"})
 		return
@@ -43,26 +44,24 @@ func GetAllCustomer(c *gin.Context) {
 		page = 1
 	}
 
+	// Create service and assign to data
+	// Then execute method and send status request to user
 	data := services.CustomerService{}
 	err = data.GetAll(&limit, &page)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all customer value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func CreateCustomer(c *gin.Context) {
-	// Get input
-	input := services.Customer{}
-	c.ShouldBindJSON(&input)
-	fmt.Println(input)
+	// Create service and assign to data
+	data := services.CustomerService{Items: []models.Customer{{}}}
+	c.ShouldBindJSON(&data.Items[0])
 
-	// Assign to data and create
-	data := services.CustomerService{Items: []services.Customer{input}}
+	// Execute method and send status request to user
 	err := data.Create()
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create customer!"})
 		return
@@ -71,16 +70,13 @@ func CreateCustomer(c *gin.Context) {
 }
 
 func UpdateCustomer(c *gin.Context) {
-	// Get input
-	input := services.Customer{}
-	c.ShouldBindJSON(&input)
-	fmt.Println(input)
+	// Create service and assign to data
+	data := services.CustomerService{Items: []models.Customer{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+	data.Items[0].Id = c.Param("id")
 
-	// Assign to data and create
-	data := services.CustomerService{Items: []services.Customer{input}}
-	fmt.Println(data)
+	// Execute method and send status request to user
 	err := data.Update()
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update customer!"})
 		return
@@ -89,9 +85,13 @@ func UpdateCustomer(c *gin.Context) {
 }
 
 func DeleteCustomer(c *gin.Context) {
-	id := c.Param("id")
-	err := access.DeleteCustomer(&id)
+	// Create service and assign to data
+	data := services.CustomerService{Items: []models.Customer{{
+		Id: c.Param("id"),
+	}}}
 
+	// Execute method and send status request to user
+	err := data.Delete()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete customer!"})
 		return

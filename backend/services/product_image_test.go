@@ -6,10 +6,10 @@ import (
 	"commercial-shop.com/models"
 )
 
-func Test_GetCustomer(t *testing.T) {
+func Test_GetProductImage(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := ProductImageService{Items: []models.ProductImage{{
+		Id: "3",
 	}}}
 
 	// Execute method and if error happen send error
@@ -19,11 +19,11 @@ func Test_GetCustomer(t *testing.T) {
 	}
 }
 
-func Test_GetAllCustomer(t *testing.T) {
+func Test_GetAllProductImage(t *testing.T) {
 	// Create limit, page, service and assign to data
-	limit := 10
+	limit := 20
 	page := 1
-	data := CustomerService{}
+	data := ProductImageService{}
 
 	// Execute method and if error happen send error
 	err := data.GetAll(&limit, &page)
@@ -32,17 +32,13 @@ func Test_GetAllCustomer(t *testing.T) {
 	}
 }
 
-func Test_CreateCustomer(t *testing.T) {
+func Test_CreateProductImage(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "none",
-			Email:   "jsjsjsjsjs@sasas.com",
-			Address: "TP HCM",
-		}},
-	}
+	data := ProductImageService{Items: []models.ProductImage{{
+		Id:              "3",
+		IdProductDetail: "XD32",
+		Image:           nil,
+	}}}
 
 	// Execute method and if error happen send error
 	err := data.Create()
@@ -51,17 +47,13 @@ func Test_CreateCustomer(t *testing.T) {
 	}
 }
 
-func Test_UpdateCustomer(t *testing.T) {
+func Test_UpdateProductImage(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "0111432389",
-			Email:   "jsjsjsjsjs@sasas.com",
-			Address: "TP HCM",
-		}},
-	}
+	data := ProductImageService{Items: []models.ProductImage{{
+		Id:              "3",
+		IdProductDetail: "D33",
+		Image:           nil,
+	}}}
 
 	// Execute method and if error happen send error
 	err := data.Update()
@@ -70,15 +62,15 @@ func Test_UpdateCustomer(t *testing.T) {
 	}
 }
 
-func Test_DeleteCustomer(t *testing.T) {
+func Test_DeleteProductImage(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := ProductImageService{Items: []models.ProductImage{{
+		Id: "3",
 	}}}
 
 	// Execute method and if error happen send error
 	err := data.Delete()
 	if err != nil {
-		t.Fatalf("Error: %v", err)
+		t.Fatalf("Err: %v", err)
 	}
 }

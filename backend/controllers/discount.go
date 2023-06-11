@@ -1,15 +1,29 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"commercial-shop.com/access"
 	"commercial-shop.com/models"
+	"commercial-shop.com/services"
 )
+
+func GetDiscount(c *gin.Context) {
+	// Create service and assign to data
+	data := services.DiscountService{Items: []models.Discount{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Get()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get discount value"})
+		return
+	}
+	c.JSON(http.StatusOK, data.Items)
+}
 
 func GetAllDiscount(c *gin.Context) {
 	// Get limit
@@ -30,32 +44,24 @@ func GetAllDiscount(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindAllDiscount(&limit, &page)
-
+	// Create service and assign to data
+	// Then execute method and send status request to user
+	data := services.DiscountService{}
+	err = data.GetAll(&limit, &page)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all discount value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
-}
-
-func GetDiscount(c *gin.Context) {
-	id := c.Param("id")
-	data, err := access.FindDiscount(&id)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get discount value"})
-		return
-	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func CreateDiscount(c *gin.Context) {
-	data := models.Discount{}
-	c.ShouldBindJSON(&data)
-	err := access.CreateDiscount(&data)
+	// Create service and assign to data
+	data := services.DiscountService{Items: []models.Discount{{}}}
+	c.ShouldBindJSON(&data.Items[0])
 
+	// Execute method and send status request to user
+	err := data.Create()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create discount!"})
 		return
@@ -64,12 +70,13 @@ func CreateDiscount(c *gin.Context) {
 }
 
 func UpdateDiscount(c *gin.Context) {
-	data := models.Discount{}
-	c.ShouldBindJSON(&data)
-	data.Id = c.Param("id")
+	// Create service and assign to data
+	data := services.DiscountService{Items: []models.Discount{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+	data.Items[0].Id = c.Param("id")
 
-	err := access.UpdateDiscount(&data)
-
+	// Execute method and send status request to user
+	err := data.Update()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update discount!"})
 		return
@@ -78,9 +85,13 @@ func UpdateDiscount(c *gin.Context) {
 }
 
 func DeleteDiscount(c *gin.Context) {
-	id := c.Param("id")
-	err := access.DeleteDiscount(&id)
+	// Create service and assign to data
+	data := services.DiscountService{Items: []models.Discount{{
+		Id: c.Param("id"),
+	}}}
 
+	// Execute method and send status request to user
+	err := data.Delete()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete discount!"})
 		return

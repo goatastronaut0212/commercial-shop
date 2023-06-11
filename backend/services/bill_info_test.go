@@ -2,14 +2,15 @@ package services
 
 import (
 	"testing"
+	"time"
 
 	"commercial-shop.com/models"
 )
 
-func Test_GetCustomer(t *testing.T) {
+func Test_GetBillInfo(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := BillInfoService{Items: []models.BillInfo{{
+		Id: "001",
 	}}}
 
 	// Execute method and if error happen send error
@@ -19,11 +20,11 @@ func Test_GetCustomer(t *testing.T) {
 	}
 }
 
-func Test_GetAllCustomer(t *testing.T) {
+func Test_GetAllBillInfo(t *testing.T) {
 	// Create limit, page, service and assign to data
 	limit := 10
-	page := 1
-	data := CustomerService{}
+	page := 10
+	data := ProductImageService{}
 
 	// Execute method and if error happen send error
 	err := data.GetAll(&limit, &page)
@@ -32,17 +33,15 @@ func Test_GetAllCustomer(t *testing.T) {
 	}
 }
 
-func Test_CreateCustomer(t *testing.T) {
+func Test_CreateBillInfo(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "none",
-			Email:   "jsjsjsjsjs@sasas.com",
-			Address: "TP HCM",
-		}},
-	}
+	data := BillInfoService{Items: []models.BillInfo{{
+		Id:         "001",
+		CustomerId: "VIP03",
+		Date:       time.Now(),
+		Status:     0,
+		Payment:    1,
+	}}}
 
 	// Execute method and if error happen send error
 	err := data.Create()
@@ -51,17 +50,15 @@ func Test_CreateCustomer(t *testing.T) {
 	}
 }
 
-func Test_UpdateCustomer(t *testing.T) {
+func Test_UpdateBillInfo(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "0111432389",
-			Email:   "jsjsjsjsjs@sasas.com",
-			Address: "TP HCM",
-		}},
-	}
+	data := BillInfoService{Items: []models.BillInfo{{
+		Id:         "001",
+		CustomerId: "VIP03",
+		Date:       time.Now(),
+		Status:     2,
+		Payment:    1,
+	}}}
 
 	// Execute method and if error happen send error
 	err := data.Update()
@@ -70,15 +67,15 @@ func Test_UpdateCustomer(t *testing.T) {
 	}
 }
 
-func Test_DeleteCustomer(t *testing.T) {
+func Test_DeleteBillInfo(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := BillInfoService{Items: []models.BillInfo{{
+		Id: "001",
 	}}}
 
 	// Execute method and if error happen send error
 	err := data.Delete()
 	if err != nil {
-		t.Fatalf("Error: %v", err)
+		t.Fatalf("Err: %v", err)
 	}
 }

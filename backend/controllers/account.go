@@ -7,9 +7,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"commercial-shop.com/access"
 	"commercial-shop.com/models"
+	"commercial-shop.com/services"
 )
+
+func GetAccount(c *gin.Context) {
+	// Create service and assign to data
+	data := services.AccountService{Items: []models.Account{{
+		Username: c.Param("username"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Get()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get account value"})
+		return
+	}
+	c.JSON(http.StatusOK, data.Items)
+}
 
 func GetAllAccount(c *gin.Context) {
 	// Get limit
@@ -30,33 +45,25 @@ func GetAllAccount(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindAllAccount(&limit, &page)
-
+	// Create service and assign to data
+	// Then execute method and send status request to user
+	data := services.AccountService{}
+	err = data.GetAll(&limit, &page)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all account value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
-}
-
-func GetAccount(c *gin.Context) {
-	id := c.Param("id")
-	data, err := access.FindAccount(&id)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get account value"})
-		return
-	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func CreateAccount(c *gin.Context) {
-	data := models.Account{}
-	c.ShouldBindJSON(&data)
+	// Create service and assign to data
+	data := services.AccountService{Items: []models.Account{{}}}
+	c.ShouldBindJSON(&data.Items[0])
 
-	err := access.CreateAccount(&data)
-
+	// Execute method and send status request to user
+	err := data.Create()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account!"})
 		return
@@ -65,12 +72,13 @@ func CreateAccount(c *gin.Context) {
 }
 
 func UpdateAccount(c *gin.Context) {
-	data := models.Account{}
-	c.ShouldBindJSON(&data)
-	data.Username = c.Param("id")
+	// Create service and assign to data
+	data := services.AccountService{Items: []models.Account{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+	data.Items[0].Username = c.Param("username")
 
-	err := access.UpdateAccount(&data)
-
+	// Execute method and send status request to user
+	err := data.Update()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update account!"})
 		return
@@ -79,9 +87,13 @@ func UpdateAccount(c *gin.Context) {
 }
 
 func DeleteAccount(c *gin.Context) {
-	id := c.Param("id")
-	err := access.DeleteAccount(&id)
+	// Create service and assign to data
+	data := services.AccountService{Items: []models.Account{{
+		Username: c.Param("username"),
+	}}}
 
+	// Execute method and send status request to user
+	err := data.Delete()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete account!"})
 		return

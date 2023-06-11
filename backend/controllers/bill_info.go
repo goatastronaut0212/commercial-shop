@@ -7,18 +7,33 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"commercial-shop.com/access"
 	"commercial-shop.com/models"
+	"commercial-shop.com/services"
 )
 
-func GetAllBill_Info(c *gin.Context) {
+func GetBillInfo(c *gin.Context) {
+	// Create service and assign to data
+	data := services.BillInfoService{Items: []models.BillInfo{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Get()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get bill info value"})
+		return
+	}
+	c.JSON(http.StatusOK, data.Items)
+}
+
+func GetAllBillInfo(c *gin.Context) {
 	// Get limit
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		limit = 20
+		limit = 10
 	}
 	if limit <= 0 {
-		limit = 20
+		limit = 10
 	}
 
 	// Get page
@@ -30,32 +45,25 @@ func GetAllBill_Info(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindAllBillInfo(&limit, &page)
-
+	// Create service and assign to data
+	// Then execute method and send status request to user
+	data := services.BillInfoService{}
+	err = data.GetAll(&limit, &page)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all bill info value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
-}
-
-func GetBill_Info(c *gin.Context) {
-	id := c.Param("id")
-	data, err := access.FindBillInfo(&id)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get bill info value"})
-		return
-	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func CreateBillInfo(c *gin.Context) {
-	data := models.BillInfo{}
-	c.ShouldBindJSON(&data)
-	err := access.CreateBillInfo(&data)
+	// Create service and assign to data
+	data := services.BillInfoService{Items: []models.BillInfo{{}}}
+	c.ShouldBindJSON(&data.Items[0])
 
+	// Execute method and send status request to user
+	err := data.Create()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create bill info!"})
 		return
@@ -64,12 +72,13 @@ func CreateBillInfo(c *gin.Context) {
 }
 
 func UpdateBillInfo(c *gin.Context) {
-	data := models.BillInfo{}
-	c.ShouldBindJSON(&data)
-	data.Id = c.Param("id")
+	// Create service and assign to data
+	data := services.BillInfoService{Items: []models.BillInfo{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+	data.Items[0].Id = c.Param("id")
 
-	err := access.UpdateBillInfo(&data)
-
+	// Execute method and send status request to user
+	err := data.Update()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update bill info!"})
 		return
@@ -78,9 +87,13 @@ func UpdateBillInfo(c *gin.Context) {
 }
 
 func DeleteBillInfo(c *gin.Context) {
-	id := c.Param("id")
-	err := access.DeleteBillInfo(&id)
+	// Create service and assign to data
+	data := services.BillInfoService{Items: []models.BillInfo{{
+		Id: c.Param("id"),
+	}}}
 
+	// Execute method and send status request to user
+	err := data.Delete()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete bill info!"})
 		return

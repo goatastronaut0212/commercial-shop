@@ -9,11 +9,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type ProductService struct {
-	Items []models.Product
+type ProductImageService struct {
+	Items []models.ProductImage
 }
 
-func (sv *ProductService) Get() error {
+func (sv *ProductImageService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -22,13 +22,13 @@ func (sv *ProductService) Get() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "SELECT * FROM Product WHERE product_id='" + sv.Items[0].Id + "';"
+	sql := "SELECT * FROM ProductImage WHERE product_image_id='" + sv.Items[0].Id + "';"
 
 	// Get rows from conn with SQL command
 	err = conn.QueryRow(database.CTX, sql).Scan(
 		&sv.Items[0].Id,
-		&sv.Items[0].IdCategory,
-		&sv.Items[0].Name,
+		&sv.Items[0].IdProductDetail,
+		&sv.Items[0].Image,
 	)
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func (sv *ProductService) Get() error {
 	return nil
 }
 
-func (sv *ProductService) GetAll(limit *int, page *int) error {
+func (sv *ProductImageService) GetAll(limit *int, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -46,7 +46,7 @@ func (sv *ProductService) GetAll(limit *int, page *int) error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "SELECT * FROM Product ORDER BY product_id LIMIT @limit OFFSET @offset;"
+	sql := "SELECT * FROM ProductImage ORDER BY product_image_id LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),
@@ -61,12 +61,12 @@ func (sv *ProductService) GetAll(limit *int, page *int) error {
 	// convert each rows to struct and append to Slice to return
 	i := 0
 	for rows.Next() {
-		sv.Items = append(sv.Items, models.Product{})
+		sv.Items = append(sv.Items, models.ProductImage{})
 
 		err := rows.Scan(
 			&sv.Items[i].Id,
-			&sv.Items[i].IdCategory,
-			&sv.Items[i].Name,
+			&sv.Items[i].IdProductDetail,
+			&sv.Items[i].Image,
 		)
 		if err != nil {
 			return err
@@ -81,32 +81,7 @@ func (sv *ProductService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *ProductService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "INSERT INTO Product VALUES (@id, @idCategory, @name);"
-	args := pgx.NamedArgs{
-		"id":         sv.Items[0].Id,
-		"idCategory": sv.Items[0].IdCategory,
-		"name":       sv.Items[0].Name,
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *ProductService) Update() error {
+func (sv *ProductImageService) Create() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -117,18 +92,18 @@ func (sv *ProductService) Update() error {
 	// SQL commamd
 	sql := ""
 	args := pgx.NamedArgs{}
-	if sv.Items[0].Name == "" {
-		sql = "UPDATE Product SET category_id=@idCategory WHERE product_id=@id;"
+	if sv.Items[0].Image == nil {
+		sql = "INSERT INTO ProductImage (product_image_id, product_detail_id) VALUES (@id, @idProductDetail);"
 		args = pgx.NamedArgs{
-			"id":         sv.Items[0].Id,
-			"idCategory": sv.Items[0].IdCategory,
+			"id":              sv.Items[0].Id,
+			"idProductDetail": sv.Items[0].IdProductDetail,
 		}
 	} else {
-		sql = "UPDATE Product SET category_id=@idCategory, product_name=@name WHERE product_id=@id;"
+		sql = "INSERT INTO ProductImage VALUES (@id, @idProductDetail, @image);"
 		args = pgx.NamedArgs{
-			"id":         sv.Items[0].Id,
-			"idCategory": sv.Items[0].IdCategory,
-			"name":       sv.Items[0].Name,
+			"id":              sv.Items[0].Id,
+			"idProductDetail": sv.Items[0].IdProductDetail,
+			"image":           sv.Items[0].Image,
 		}
 	}
 
@@ -141,7 +116,7 @@ func (sv *ProductService) Update() error {
 	return nil
 }
 
-func (sv *ProductService) Delete() error {
+func (sv *ProductImageService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -150,7 +125,42 @@ func (sv *ProductService) Delete() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "DELETE FROM Product WHERE product_id='" + sv.Items[0].Id + "';"
+	sql := ""
+	args := pgx.NamedArgs{}
+	if sv.Items[0].Image == nil {
+		sql = "UPDATE ProductImage SET product_detail_id=@idProductDetail, product_image=@image WHERE product_image_id=@id;"
+		args = pgx.NamedArgs{
+			"id":              sv.Items[0].Id,
+			"idProductDetail": sv.Items[0].IdProductDetail,
+		}
+	} else {
+		sql = "UPDATE ProductImage SET product_detail_id=@idProductDetail, product_image=@image WHERE product_image_id=@id;"
+		args = pgx.NamedArgs{
+			"id":              sv.Items[0].Id,
+			"idProductDetail": sv.Items[0].IdProductDetail,
+			"image":           sv.Items[0].Image,
+		}
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *ProductImageService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM ProductImage WHERE product_image_id='" + sv.Items[0].Id + "';"
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql)

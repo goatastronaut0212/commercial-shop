@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"strconv"
 
 	"commercial-shop.com/database"
@@ -9,11 +10,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type ProductService struct {
-	Items []models.Product
+type BillInfoService struct {
+	Items []models.BillInfo
 }
 
-func (sv *ProductService) Get() error {
+func (sv *BillInfoService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -22,13 +23,15 @@ func (sv *ProductService) Get() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "SELECT * FROM Product WHERE product_id='" + sv.Items[0].Id + "';"
+	sql := "SELECT * FROM BillInfo WHERE bill_id='" + sv.Items[0].Id + "';"
 
 	// Get rows from conn with SQL command
 	err = conn.QueryRow(database.CTX, sql).Scan(
 		&sv.Items[0].Id,
-		&sv.Items[0].IdCategory,
-		&sv.Items[0].Name,
+		&sv.Items[0].CustomerId,
+		&sv.Items[0].Date,
+		&sv.Items[0].Status,
+		&sv.Items[0].Payment,
 	)
 	if err != nil {
 		return err
@@ -37,7 +40,7 @@ func (sv *ProductService) Get() error {
 	return nil
 }
 
-func (sv *ProductService) GetAll(limit *int, page *int) error {
+func (sv *BillInfoService) GetAll(limit *int, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -46,7 +49,7 @@ func (sv *ProductService) GetAll(limit *int, page *int) error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "SELECT * FROM Product ORDER BY product_id LIMIT @limit OFFSET @offset;"
+	sql := "SELECT * FROM BillInfo ORDER BY bill_id LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),
@@ -61,12 +64,14 @@ func (sv *ProductService) GetAll(limit *int, page *int) error {
 	// convert each rows to struct and append to Slice to return
 	i := 0
 	for rows.Next() {
-		sv.Items = append(sv.Items, models.Product{})
+		sv.Items = append(sv.Items, models.BillInfo{})
 
 		err := rows.Scan(
 			&sv.Items[i].Id,
-			&sv.Items[i].IdCategory,
-			&sv.Items[i].Name,
+			&sv.Items[i].CustomerId,
+			&sv.Items[i].Date,
+			&sv.Items[i].Status,
+			&sv.Items[i].Payment,
 		)
 		if err != nil {
 			return err
@@ -81,32 +86,7 @@ func (sv *ProductService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *ProductService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "INSERT INTO Product VALUES (@id, @idCategory, @name);"
-	args := pgx.NamedArgs{
-		"id":         sv.Items[0].Id,
-		"idCategory": sv.Items[0].IdCategory,
-		"name":       sv.Items[0].Name,
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *ProductService) Update() error {
+func (sv *BillInfoService) Create() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -117,18 +97,62 @@ func (sv *ProductService) Update() error {
 	// SQL commamd
 	sql := ""
 	args := pgx.NamedArgs{}
-	if sv.Items[0].Name == "" {
-		sql = "UPDATE Product SET category_id=@idCategory WHERE product_id=@id;"
+	if sv.Items[0].Date.IsZero() {
+		sql = "INSERT INTO BillInfo (bill_id, customer_id, bill_status, bill_payment) VALUES (@id, @customer_id, @status, @payment);"
 		args = pgx.NamedArgs{
-			"id":         sv.Items[0].Id,
-			"idCategory": sv.Items[0].IdCategory,
+			"id":          sv.Items[0].Id,
+			"customer_id": sv.Items[0].CustomerId,
+			"status":      sv.Items[0].Status,
+			"payment":     sv.Items[0].Payment,
 		}
 	} else {
-		sql = "UPDATE Product SET category_id=@idCategory, product_name=@name WHERE product_id=@id;"
+		sql = "INSERT INTO BillInfo VALUES (@id, @customer_id, @date, @status, @payment);"
 		args = pgx.NamedArgs{
-			"id":         sv.Items[0].Id,
-			"idCategory": sv.Items[0].IdCategory,
-			"name":       sv.Items[0].Name,
+			"id":          sv.Items[0].Id,
+			"customer_id": sv.Items[0].CustomerId,
+			"date":        sv.Items[0].Date,
+			"status":      sv.Items[0].Status,
+			"payment":     sv.Items[0].Payment,
+		}
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	fmt.Println(err)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *BillInfoService) Update() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := ""
+	args := pgx.NamedArgs{}
+	if sv.Items[0].Date.IsZero() {
+		sql = "UPDATE BillInfo SET customer_id=@customer_id, bill_status=@status, bill_payment=@payment WHERE bill_id=@id;"
+		args = pgx.NamedArgs{
+			"id":          sv.Items[0].Id,
+			"customer_id": sv.Items[0].CustomerId,
+			"status":      sv.Items[0].Status,
+			"payment":     sv.Items[0].Payment,
+		}
+	} else {
+		sql = "UPDATE BillInfo SET customer_id=@customer_id, bill_date=@billdate, bill_status=@status, bill_payment=@payment WHERE bill_id=@id;"
+		args = pgx.NamedArgs{
+			"id":          sv.Items[0].Id,
+			"customer_id": sv.Items[0].CustomerId,
+			"date":        sv.Items[0].Date,
+			"status":      sv.Items[0].Status,
+			"payment":     sv.Items[0].Payment,
 		}
 	}
 
@@ -141,7 +165,7 @@ func (sv *ProductService) Update() error {
 	return nil
 }
 
-func (sv *ProductService) Delete() error {
+func (sv *BillInfoService) Delete() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -150,7 +174,7 @@ func (sv *ProductService) Delete() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "DELETE FROM Product WHERE product_id='" + sv.Items[0].Id + "';"
+	sql := "DELETE FROM BillInfo WHERE bill_id='" + sv.Items[0].Id + "';"
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql)
