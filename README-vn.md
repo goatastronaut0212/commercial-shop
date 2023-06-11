@@ -11,10 +11,10 @@ nghiệp. Tự phát minh cho bản thân
 
 ### Mục tiêu
 
-**Quan trọng** 1 web server đầy đủ tính năng cơ bản cho phục vụ thương mại
+**Quan trọng:** 1 web server đầy đủ tính năng cơ bản cho phục vụ thương mại
 điện tử trong việc bán quần áo.
 
-**Lưu ý** Khách hàng sử dụng phần mềm không phải là 1 người mù tịt hoàn
+**Lưu ý:** Khách hàng sử dụng phần mềm không phải là 1 người mù tịt hoàn
 toàn về công nghệ thông tin cũng như quá cổ hủ chỉ muốn vấn đề giải quyết đơn
 giản gọn lẹ. Nếu muốn đơn giản dễ sử dụng và quản lý. We need time please.
 
@@ -208,4 +208,5 @@ giải quyết.
 ## Đóng góp 
 
 goatastronaut0212 (Nguyễn Nguyên Khang)
+
 Khoadz299 (Nguyễn Hiền Anh Khoa)
