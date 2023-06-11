@@ -1,2 +1,0 @@
-# commercial-shop
-Commercial shop
