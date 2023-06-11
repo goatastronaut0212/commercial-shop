@@ -129,6 +129,7 @@ sẽ có 1 số chức năng như sau :
 
 ##### Use case diagram
 
+![clothes-shop](images/use-case-clothes-shop.png)
 
 ##### Mã nguồn
 
