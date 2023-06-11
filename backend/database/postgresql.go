@@ -1,15 +1,16 @@
-package database 
+package database
 
 import "context"
 
 const (
-    username = "postgres"
-    password = "postgres"
-    database = "shopdb"
-    host = "localhost"
-    port = "5432"
+	username = "postgres"
+	password = "postgres"
+	database = "shopdb"
+	host     = "localhost"
+	port     = "5432"
 )
 
 // var urlExample = "postgres://username:password@localhost:5432/database_name
 const CONNECT_STR = "postgres://" + username + ":" + password + "@" + host + ":" + port + "/" + database + "?sslmode=disable"
-var CTX= context.Background()
+
+var CTX = context.Background()

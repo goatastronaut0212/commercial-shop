@@ -9,9 +9,9 @@ import (
 func addAccountRoutes(rg *gin.RouterGroup) {
 	route := rg.Group("account")
 
+	route.GET("/:username", controllers.GetAccount)
 	route.GET("", controllers.GetAllAccount)
-	route.GET("/:id", controllers.GetAccount)
 	route.POST("", controllers.CreateAccount)
-	route.PATCH("/:id", controllers.UpdateAccount)
-	route.DELETE("/:id", controllers.DeleteAccount)
+	route.PATCH("/:username", controllers.UpdateAccount)
+	route.DELETE("/:username", controllers.DeleteAccount)
 }

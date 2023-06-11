@@ -7,9 +7,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"commercial-shop.com/access"
 	"commercial-shop.com/models"
+	"commercial-shop.com/services"
 )
+
+func GetProductDetail(c *gin.Context) {
+	// Create service and assign to data
+	data := services.ProductDetailService{Items: []models.ProductDetail{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Get()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product detail value"})
+		return
+	}
+	c.JSON(http.StatusOK, data.Items)
+}
 
 func GetAllProductDetail(c *gin.Context) {
 	// Get limit
@@ -30,32 +45,25 @@ func GetAllProductDetail(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindAllProductDetail(&limit, &page)
-
+	// Create service and assign to data
+	// Then execute method and send status request to user
+	data := services.ProductDetailService{}
+	err = data.GetAll(&limit, &page)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all product detail value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
-}
-
-func GetProductDetail(c *gin.Context) {
-	id := c.Param("id")
-	data, err := access.FindProductDetail(&id)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get product detail value"})
-		return
-	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func CreateProductDetail(c *gin.Context) {
-	data := models.ProductDetail{}
-	c.ShouldBindJSON(&data)
-	err := access.CreateProductDetail(&data)
+	// Create service and assign to data
+	data := services.ProductDetailService{Items: []models.ProductDetail{{}}}
+	c.ShouldBindJSON(&data.Items[0])
 
+	// Execute method and send status request to user
+	err := data.Create()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product detail!"})
 		return
@@ -64,12 +72,13 @@ func CreateProductDetail(c *gin.Context) {
 }
 
 func UpdateProductDetail(c *gin.Context) {
-	data := models.ProductDetail{}
-	c.ShouldBindJSON(&data)
-	data.Id = c.Param("id")
+	// Create service and assign to data
+	data := services.ProductDetailService{Items: []models.ProductDetail{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+	data.Items[0].Id = c.Param("id")
 
-	err := access.UpdateProductDetail(&data)
-
+	// Execute method and send status request to user
+	err := data.Update()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product detail!"})
 		return
@@ -78,9 +87,13 @@ func UpdateProductDetail(c *gin.Context) {
 }
 
 func DeleteProductDetail(c *gin.Context) {
-	id := c.Param("id")
-	err := access.DeleteProductDetail(&id)
+	// Create service and assign to data
+	data := services.ProductDetailService{Items: []models.ProductDetail{{
+		Id: c.Param("id"),
+	}}}
 
+	// Execute method and send status request to user
+	err := data.Delete()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product detail!"})
 		return

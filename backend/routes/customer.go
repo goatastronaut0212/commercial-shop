@@ -9,8 +9,8 @@ import (
 func addCustomerRoutes(rg *gin.RouterGroup) {
 	route := rg.Group("customer")
 
-	route.GET("", controllers.GetAllCustomer)
 	route.GET("/:id", controllers.GetCustomer)
+	route.GET("", controllers.GetAllCustomer)
 	route.POST("", controllers.CreateCustomer)
 	route.PATCH("/:id", controllers.UpdateCustomer)
 	route.DELETE("/:id", controllers.DeleteCustomer)

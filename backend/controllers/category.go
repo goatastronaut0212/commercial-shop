@@ -1,24 +1,38 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"commercial-shop.com/access"
 	"commercial-shop.com/models"
+	"commercial-shop.com/services"
 )
+
+func GetCategory(c *gin.Context) {
+	// Create service and assign to data
+	data := services.CategoryService{Items: []models.Category{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Get()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get category value"})
+		return
+	}
+	c.JSON(http.StatusOK, data.Items)
+}
 
 func GetAllCategory(c *gin.Context) {
 	// Get limit
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		limit = 20
+		limit = 10
 	}
 	if limit <= 0 {
-		limit = 20
+		limit = 10
 	}
 
 	// Get page
@@ -30,33 +44,24 @@ func GetAllCategory(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := access.FindAllCategory(&limit, &page)
-
+	// Create service and assign to data
+	// Then execute method and send status request to user
+	data := services.CategoryService{}
+	err = data.GetAll(&limit, &page)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all category value"})
 		return
 	}
-	c.JSON(http.StatusOK, data)
-}
-
-func GetCategory(c *gin.Context) {
-	id := c.Param("id")
-	data, err := access.FindCategory(&id)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get category value"})
-		return
-	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, data.Items)
 }
 
 func CreateCategory(c *gin.Context) {
-	data := models.Category{}
-	c.ShouldBindJSON(&data)
+	// Create service and assign to data
+	data := services.CategoryService{Items: []models.Category{{}}}
+	c.ShouldBindJSON(&data.Items[0])
 
-	err := access.CreateCategory(&data)
-
+	// Execute method and send status request to user
+	err := data.Create()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create category!"})
 		return
@@ -65,12 +70,13 @@ func CreateCategory(c *gin.Context) {
 }
 
 func UpdateCategory(c *gin.Context) {
-	data := models.Category{}
-	c.ShouldBindJSON(&data)
-	data.Id = c.Param("id")
+	// Create service and assign to data
+	data := services.CategoryService{Items: []models.Category{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+	data.Items[0].Id = c.Param("id")
 
-	err := access.UpdateCategory(&data)
-
+	// Execute method and send status request to user
+	err := data.Update()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update category!"})
 		return
@@ -79,9 +85,13 @@ func UpdateCategory(c *gin.Context) {
 }
 
 func DeleteCategory(c *gin.Context) {
-	id := c.Param("id")
-	err := access.DeleteCategory(&id)
+	// Create service and assign to data
+	data := services.CategoryService{Items: []models.Category{{
+		Id: c.Param("id"),
+	}}}
 
+	// Execute method and send status request to user
+	err := data.Delete()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete category!"})
 		return
