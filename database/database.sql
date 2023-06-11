@@ -96,8 +96,11 @@ CREATE TABLE BillDetail (
         FOREIGN KEY (bill_id)
         REFERENCES BillInfo(bill_id),
     CONSTRAINT fk_product_detail_id_for_bill_detail
-        FOREIGN KEY (product_detail_id)
+        FOREIGN KEY (product_detail_id),
         REFERENCES ProductDetail(product_detail_id)
+	CONSTRAINT fk_discount_id_for_bill_detail
+	    FOREIGN KEY (discount_id)
+		REFERENCES Discount(discount_id)
 );
 
 \i insert.sql
