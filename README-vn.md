@@ -16,7 +16,7 @@ nghiệp. Tự phát minh cho bản thân
 
 **Lưu ý:** Khách hàng sử dụng phần mềm không phải là 1 người mù tịt hoàn
 toàn về công nghệ thông tin cũng như quá cổ hủ chỉ muốn vấn đề giải quyết đơn
-giản gọn lẹ. Nếu muốn đơn giản dễ sử dụng và quản lý. We need time please.
+giản gọn lẹ. Nếu muốn đơn giản dễ sử dụng và quản lý.
 
 **Đề xuất mục tiêu khác:**
 + Bảo mật web server
@@ -141,11 +141,12 @@ Sử dụng Go Web Framework tên là [Gin](https://github.com/gin-gonic/gin)
 Sao lại là Go?
 + Go
   + Nhanh (compiled language, Want to work like scripting? It can too.)
-  + Memory safe (Garbage collector. Don't ask me why have you ever write C/C++?)
+  + Memory safe (Garbage collector)
   + Hõ trợ kiểu dữ liệu 
   + Đơn giản?
     + Các syntax đa phần là sạch vì ít khi phải nhớ
     + Không class nhưng có struct và methods
+    + Có embedded struct để thừa kế các struct khác
     + Không Override? Bạn chỉ cần copy paste và edit code lại. Get the job done.
   + Package Management?
     + Không hoàn hảo nhưng phù hợp (Because Go packages use links which is bad
@@ -154,8 +155,8 @@ Sao lại là Go?
 
 Mã nguồn xem tại [đây](backend/)
 
-Dự tính phát triển thêm để tự tạo code backend tùy thuộc vào bảng?
-Hãy bàn bạc sau khi đã đạt được các mục tiêu chính. We need time. 
+Dự tính phát triển thêm để code có thể tự tạo code backend tùy thuộc vào bảng.
+Hãy bàn bạc sau khi đã đạt được các mục tiêu chính.
 
 ### Client
 
