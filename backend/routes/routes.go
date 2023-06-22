@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -8,6 +9,9 @@ var router = gin.Default()
 
 func Run(port string) {
 	getRoutes()
+	config := cors.DefaultConfig()
+	config.AllowMethods = []string{"GET", "POST", "PATCH", "DELETE"}
+	router.Use(cors.New(config))
 	router.Run(":" + port)
 }
 
