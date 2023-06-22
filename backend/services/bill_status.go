@@ -3,18 +3,17 @@ package services
 import (
 	"strconv"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
-
 	"commercial-shop.com/database"
 	"commercial-shop.com/models"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type AccountService struct {
-	Items []models.Account
+type BillStatusService struct {
+	Items []models.BillStatus
 }
 
-func (sv *AccountService) Get() error {
+func (sv *BillStatusService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -23,14 +22,12 @@ func (sv *AccountService) Get() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "SELECT * FROM Account WHERE account_username='" + sv.Items[0].Username + "';"
+	sql := "SELECT * FROM BillStatus WHERE bill_status_id=" + strconv.Itoa(sv.Items[0].Id) + ";"
 
 	// Get rows from conn with SQL command
 	err = conn.QueryRow(database.CTX, sql).Scan(
-		&sv.Items[0].Username,
-		&sv.Items[0].Password,
-		&sv.Items[0].DisplayName,
-		&sv.Items[0].RoleId,
+		&sv.Items[0].Id,
+		&sv.Items[0].Description,
 	)
 	if err != nil {
 		return err
@@ -39,7 +36,7 @@ func (sv *AccountService) Get() error {
 	return nil
 }
 
-func (sv *AccountService) GetAll(limit *int, page *int) error {
+func (sv *BillStatusService) GetAll(limit *int, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -48,7 +45,7 @@ func (sv *AccountService) GetAll(limit *int, page *int) error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "SELECT * FROM Account LIMIT @limit OFFSET @offset;"
+	sql := "SELECT * FROM BillStatus LIMIT @limit OFFSET @offset;"
 	args := pgx.NamedArgs{
 		"limit":  strconv.Itoa(*limit),
 		"offset": strconv.Itoa(*limit * (*page - 1)),
@@ -63,13 +60,11 @@ func (sv *AccountService) GetAll(limit *int, page *int) error {
 	// convert each rows to struct and append to Slice to return
 	i := 0
 	for rows.Next() {
-		sv.Items = append(sv.Items, models.Account{})
+		sv.Items = append(sv.Items, models.BillStatus{})
 
 		err := rows.Scan(
-			&sv.Items[i].Username,
-			&sv.Items[i].Password,
-			&sv.Items[i].DisplayName,
-			&sv.Items[i].RoleId,
+			&sv.Items[i].Id,
+			&sv.Items[i].Description,
 		)
 		if err != nil {
 			return err
@@ -84,7 +79,7 @@ func (sv *AccountService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *AccountService) Create() error {
+func (sv *BillStatusService) Create() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -93,16 +88,14 @@ func (sv *AccountService) Create() error {
 	defer conn.Close()
 
 	// SQL commamd check options input
-	sql := "INSERT INTO Account (account_username, account_password, role_id) VALUES (@username, @password, @role_id);"
+	sql := "INSERT INTO BillStatus (bill_status_id) VALUES (@id);"
 	args := pgx.NamedArgs{
-		"username": sv.Items[0].Username,
-		"password": sv.Items[0].Password,
-		"role_id":  sv.Items[0].RoleId,
+		"id": sv.Items[0].Id,
 	}
 
-	if sv.Items[0].DisplayName != "" {
-		sql = "INSERT INTO Account VALUES (@username, @password, @display_name, @role_id);"
-		args["display_name"] = sv.Items[0].DisplayName
+	if sv.Items[0].Description != "" {
+		sql = "INSERT INTO BillStatus VALUES (@id, @description);"
+		args["description"] = sv.Items[0].Description
 	}
 
 	// Execute sql command
@@ -114,62 +107,7 @@ func (sv *AccountService) Create() error {
 	return nil
 }
 
-func (sv *AccountService) Update(password *bool, displayname *bool, roleid *bool) error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd check options input
-	sql := "UPDATE Account SET "
-	args := pgx.NamedArgs{
-		"username": sv.Items[0].Username,
-	}
-	nextoption := true
-
-	for i := 0; i < 3; i++ {
-		switch {
-		case *password == true:
-			sql += "account_password=@password"
-			args["password"] = sv.Items[0].Password
-			*password = false
-
-		case *displayname == true:
-			sql += "account_displayname=@display_name"
-			args["display_name"] = sv.Items[0].DisplayName
-			*displayname = false
-
-		case *roleid == true:
-			sql += "role_id=@role_id"
-			args["role_id"] = sv.Items[0].RoleId
-			*roleid = false
-
-		default:
-			nextoption = false
-		}
-
-		// comma false
-		if !nextoption {
-			sql = sql[:len(sql)-1]
-			break
-		}
-
-		sql += ","
-	}
-	sql += " WHERE account_username=@username;"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *AccountService) Delete() error {
+func (sv *BillStatusService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -178,7 +116,31 @@ func (sv *AccountService) Delete() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "DELETE FROM Account WHERE account_username='" + sv.Items[0].Username + "';"
+	sql := "UPDATE BillStatus SET bill_status_description=@description WHERE bill_status_id=@id;"
+	args := pgx.NamedArgs{
+		"id":          sv.Items[0].Id,
+		"description": sv.Items[0].Description,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *BillStatusService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM BillStatus WHERE bill_status_id=" + strconv.Itoa(sv.Items[0].Id) + ";"
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql)

@@ -3,11 +3,23 @@ package models
 import "time"
 
 type Account struct {
-	Username    string `json:"username"      binding:"required"`
-	CustomerId  string `json:"customerId"    binding:"required"`
-	Password    string `json:"password"      binding:"required"`
-	DisplayName string `json:"displayName"   binding:"required"`
-	RoleId      int    `json:"roleID"        binding:"required"`
+	Username    string `json:"username"     binding:"required"`
+	RoleId      uint   `json:"roleId"       binding:"required"`
+	Password    string `json:"password"     binding:"required"`
+	DisplayName string `json:"displayName"  binding:"required"`
+}
+
+type AccountRole struct {
+	Id          int    `json:"id"          binding:"required"`
+	Description string `json:"description" binding:"required"`
+}
+
+type BillDetail struct {
+	Id              string `json:"id"               binding:"required"`
+	BillId          string `json:"billId"           binding:"required"`
+	ProductDetailId string `json:"productDetailId"  binding:"required"`
+	DiscountId      string `json:"discountId"       binding:"required"`
+	Amount          int    `json:"amount"           binding:"required"`
 }
 
 type BillInfo struct {
@@ -18,12 +30,9 @@ type BillInfo struct {
 	Payment    int       `json:"payment"       binding:"required"`
 }
 
-type BillDetail struct {
-	Id              string `json:"id"             binding:"required"`
-	BillId          string `json:"billId"         binding:"required"`
-	ProductDetailId string `json:"productDetailId"      binding:"required"`
-	DiscountId      string `json:"discountId"     binding:"required"`
-	Amount          int    `json:"amount"         binding:"required"`
+type BillStatus struct {
+	Id          int    `json:"id"          binding:"required"`
+	Description string `json:"description" binding:"required"`
 }
 
 type Category struct {
@@ -32,19 +41,20 @@ type Category struct {
 }
 
 type Customer struct {
-	Id      string `json:"id"         binding:"required"`
-	Name    string `json:"name"       binding:"required"`
-	Phone   string `json:"phone"      binding:"required"`
-	Email   string `json:"email"      binding:"required"`
-	Address string `json:"address"    binding:"required"`
+	Id              string `json:"id"               binding:"required"`
+	AccountUsername string `json:"accountUsername"  binding:"required"`
+	Name            string `json:"name"             binding:"required"`
+	Phone           string `json:"phone"            binding:"required"`
+	Email           string `json:"email"            binding:"required"`
+	Address         string `json:"address"          binding:"required"`
 }
 
 type Discount struct {
-	Id          string    `string:"id"          binding:"required"`
-	Description string    `string:"description" binding:"required"`
-	Percent     float64   `string:"percent"     binding:"required"`
-	DateStart   time.Time `string:"dateStart"   binding:"required"`
-	DateEnd     time.Time `string:"dateEnd"     binding:"required"`
+	Id          string    `json:"id"          binding:"required"`
+	Description string    `json:"description" binding:"required"`
+	Percent     float64   `json:"percent"     binding:"required"`
+	DateStart   time.Time `json:"dateStart"   binding:"required"`
+	DateEnd     time.Time `json:"dateEnd"     binding:"required"`
 }
 
 type Product struct {
@@ -54,13 +64,13 @@ type Product struct {
 }
 
 type ProductDetail struct {
-	Id          string `json:"id"          binding:"required"`
+	Id          string `json:"id"         binding:"required"`
 	IdProduct   string `json:"idProduct"   binding:"required"`
 	Color       string `json:"color"       binding:"required"`
 	Fabric      string `json:"fabric"      binding:"required"`
 	Size        string `json:"size"        binding:"required"`
+	Amount      int    `json:"amount"          binding:"required"`
 	Price       int    `json:"price"       binding:"required"`
-	Amount      int    `json:"amount"      binding:"required"`
 	Description string `json:"description" binding:"required"`
 }
 

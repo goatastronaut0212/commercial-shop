@@ -37,7 +37,6 @@ func Test_CreateAccount(t *testing.T) {
 	data := AccountService{
 		Items: []models.Account{{
 			Username:    "Khoa999",
-			CustomerId:  "VIP03",
 			Password:    "1232",
 			DisplayName: "Khoa",
 			RoleId:      1,
@@ -56,15 +55,26 @@ func Test_UpdateAccount(t *testing.T) {
 	data := AccountService{
 		Items: []models.Account{{
 			Username:    "Khoa999",
-			CustomerId:  "VIP03",
 			Password:    "123",
 			DisplayName: "Updated",
-			RoleId:      1,
+			RoleId:      0,
 		}},
 	}
 
+	// Get passing values options
+	password_option, displayname_option, roleid_option := true, true, true
+	if data.Items[0].Password == "" {
+		password_option = false
+	}
+	if data.Items[0].DisplayName == "" {
+		displayname_option = false
+	}
+	if data.Items[0].RoleId == 0 {
+		roleid_option = false
+	}
+
 	// Execute method and if error happen send error
-	err := data.Update()
+	err := data.Update(&password_option, &displayname_option, &roleid_option)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

@@ -14,8 +14,10 @@ func Run(port string) {
 func getRoutes() {
 	r := router.Group("/")
 	addAccountRoutes(r)
+	addAccountRoleRoutes(r)
 	addBillDetailRoutes(r)
 	addBillInfoRoutes(r)
+	addBillStatusRoutes(r)
 	addCategoryRoutes(r)
 	addCustomerRoutes(r)
 	addDiscountRoutes(r)

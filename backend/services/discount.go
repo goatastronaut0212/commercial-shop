@@ -25,7 +25,13 @@ func (sv *DiscountService) Get() error {
 	sql := "SELECT * FROM Discount WHERE discount_id='" + sv.Items[0].Id + "';"
 
 	// Get rows from conn with SQL command
-	err = conn.QueryRow(database.CTX, sql).Scan(&sv.Items[0].Id, &sv.Items[0].Description, &sv.Items[0].Percent, &sv.Items[0].DateStart, &sv.Items[0].DateEnd)
+	err = conn.QueryRow(database.CTX, sql).Scan(
+		&sv.Items[0].Id,
+		&sv.Items[0].Description,
+		&sv.Items[0].Percent,
+		&sv.Items[0].DateStart,
+		&sv.Items[0].DateEnd,
+	)
 	if err != nil {
 		return err
 	}
@@ -64,8 +70,8 @@ func (sv *DiscountService) GetAll(limit *int, page *int) error {
 			&sv.Items[i].Description,
 			&sv.Items[i].Percent,
 			&sv.Items[i].DateStart,
-			&sv.Items[i].DateEnd)
-
+			&sv.Items[i].DateEnd,
+		)
 		if err != nil {
 			return err
 		}

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -50,7 +49,6 @@ func GetAllAccount(c *gin.Context) {
 	data := services.AccountService{}
 	err = data.GetAll(&limit, &page)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get all account value"})
 		return
 	}
@@ -77,8 +75,20 @@ func UpdateAccount(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Username = c.Param("username")
 
+	// Get passing values options
+	password_option, displayname_option, roleid_option := true, true, true
+	if data.Items[0].Password == "" {
+		password_option = false
+	}
+	if data.Items[0].DisplayName == "" {
+		displayname_option = false
+	}
+	if data.Items[0].RoleId == 0 {
+		roleid_option = false
+	}
+
 	// Execute method and send status request to user
-	err := data.Update()
+	err := data.Update(&password_option, &displayname_option, &roleid_option)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update account!"})
 		return
