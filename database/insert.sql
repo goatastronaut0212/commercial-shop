@@ -16,3 +16,13 @@ INSERT INTO ProductImage (product_image_id, product_detail_id) VALUES
 INSERT INTO Discount (discount_id, discount_percent) VALUES
 ('XV1', 0.05),
 ('HS1', 0.03);
+
+INSERT INTO AccountRole VALUES
+(1, 'Admin'),
+(2, 'Khách hàng');
+
+INSERT INTO Account (account_username, account_password, role_id) VALUES
+('noob', '123', 1);
+
+INSERT INTO Customer VALUES
+('1', 'noob', 'Noob', '123456', 'jsjsjsjsjs@sasas.com', 'TP HCM');

@@ -23,9 +23,10 @@ CREATE TABLE ProductDetail (
     product_id           VARCHAR(20)  NOT NULL,
     product_color        VARCHAR(20)  DEFAULT 'Chưa có thông tin',
     product_fabric       VARCHAR(20)  DEFAULT 'Chưa có thông tin',
-    product_size         VARCHAR(4)   DEFAULT 'None',
+    product_size         VARCHAR(4)   DEFAULT '',
+    product_form         VARCHAR(10)  DEFAULT 'Chưa có thông tin',
+    product_amount       INT          CHECK (product_amount >= 0) DEFAULT 0,
     product_price        INT          DEFAULT 0,
-    product_amount       INT          DEFAULT 0 CHECK(product_amount >= 0),
     product_description  VARCHAR(400) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (product_detail_id),
     CONSTRAINT fk_product_id_for_product_detail
@@ -43,25 +44,34 @@ CREATE TABLE ProductImage (
         REFERENCES ProductDetail(product_detail_id)
 );
 
+CREATE TABLE AccountRole (
+    role_id          INT NOT NULL,
+    role_description VARCHAR(200) DEFAULT 'Chưa có thông tin',
+    PRIMARY KEY (role_id)
+);
+
+CREATE TABLE Account (
+    account_username    VARCHAR(20)  NOT NULL,
+    account_password    VARCHAR(200) NOT NULL,
+    account_displayname VARCHAR(100) DEFAULT '',
+    role_id             INT NOT NULL,
+    PRIMARY KEY (account_username),
+    CONSTRAINT fk_role_id_for_account
+        FOREIGN KEY (role_id)
+        REFERENCES AccountRole(role_id)
+);
+
 CREATE TABLE Customer (
     customer_id      VARCHAR(20)  NOT NULL,
+    account_username VARCHAR(20)  NOT NULL,
     customer_name    VARCHAR(50)  DEFAULT 'Chưa có thông tin',
     customer_phone   VARCHAR(20)  DEFAULT 'Chưa có thông tin',
     customer_email   VARCHAR(100) DEFAULT 'Chưa có thông tin', 
     customer_address VARCHAR(100) DEFAULT 'Chưa có thông tin',
-    PRIMARY KEY (customer_id)
-);
-
-CREATE TABLE Account (
-    account_username    VARCHAR(20) NOT NULL,
-    customer_id         VARCHAR(20) NOT NULL,
-    account_password    VARCHAR(20),
-    account_displayname VARCHAR(20),
-    role_id             INT CHECK (role_id = 0 OR role_id = 1),
-    PRIMARY KEY (account_username),
-    CONSTRAINT fk_customer_id_for_account
-        FOREIGN KEY (customer_id)
-        REFERENCES Customer(customer_id)
+    PRIMARY KEY (customer_id),
+    CONSTRAINT fk_account_username_for_customer
+        FOREIGN KEY (account_username)
+        REFERENCES Account(account_username)
 );
 
 CREATE TABLE Discount (
@@ -73,16 +83,25 @@ CREATE TABLE Discount (
     PRIMARY KEY (discount_id)
 );
 
+CREATE TABLE BillStatus (
+    bill_status_id           INT NOT NULL,
+    bill_status_description  VARCHAR(200) DEFAULT 'Chưa có thông tin',
+    PRIMARY KEY (bill_status_id)
+);
+
 CREATE TABLE BillInfo (
-    bill_id        VARCHAR(20) NOT NULL,
-    customer_id    VARCHAR(20) NOT NULL,
-    bill_date      DATE        DEFAULT NOW(),
-    bill_status    INT         CHECK (bill_status=0 OR bill_status=1 OR bill_status=2 OR bill_status=3 OR bill_status=4) DEFAULT 0,
-    bill_payment   INT         CHECK (bill_payment=0 OR bill_payment=1) DEFAULT 0,
+    bill_id         VARCHAR(20) NOT NULL,
+    customer_id     VARCHAR(20) NOT NULL,
+    bill_date       DATE        DEFAULT NOW(),
+    bill_status_id  INT         NOT NULL,
+    bill_payment    INT         CHECK (bill_payment=0 OR bill_payment=1) DEFAULT 0,
     PRIMARY KEY (bill_id),
     CONSTRAINT fk_customer_id_for_bill_info
         FOREIGN KEY (customer_id)
-        REFERENCES Customer(customer_id)
+        REFERENCES Customer(customer_id),
+    CONSTRAINT fk_bill_status_id_for_bill_info
+        FOREIGN KEY (bill_status_id)
+        REFERENCES BillStatus(bill_status_id)
 );
 
 CREATE TABLE BillDetail (
@@ -96,11 +115,11 @@ CREATE TABLE BillDetail (
         FOREIGN KEY (bill_id)
         REFERENCES BillInfo(bill_id),
     CONSTRAINT fk_product_detail_id_for_bill_detail
-        FOREIGN KEY (product_detail_id),
-        REFERENCES ProductDetail(product_detail_id)
-	CONSTRAINT fk_discount_id_for_bill_detail
-	    FOREIGN KEY (discount_id)
-		REFERENCES Discount(discount_id)
+        FOREIGN KEY (product_detail_id)
+        REFERENCES ProductDetail(product_detail_id),
+	  CONSTRAINT fk_discount_id_for_bill_detail
+	      FOREIGN KEY (discount_id)
+	      REFERENCES Discount(discount_id)
 );
 
 \i insert.sql
