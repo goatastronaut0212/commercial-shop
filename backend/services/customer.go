@@ -29,7 +29,6 @@ func (sv *CustomerService) Get() error {
 		&sv.Items[0].Id,
 		&sv.Items[0].Name,
 		&sv.Items[0].Phone,
-		&sv.Items[0].Email,
 		&sv.Items[0].Address,
 	)
 	if err != nil {
@@ -69,7 +68,6 @@ func (sv *CustomerService) GetAll(limit *int, page *int) error {
 			&sv.Items[i].Id,
 			&sv.Items[i].Name,
 			&sv.Items[i].Phone,
-			&sv.Items[i].Email,
 			&sv.Items[i].Address,
 		)
 		if err != nil {
@@ -94,12 +92,11 @@ func (sv *CustomerService) Create() error {
 	defer conn.Close()
 
 	// SQL command
-	sql := "INSERT INTO Customer VALUES (@id, @name, @phone, @email , @address);"
+	sql := "INSERT INTO Customer VALUES (@id, @name, @phone, @address);"
 	args := pgx.NamedArgs{
 		"id":      sv.Items[0].Id,
 		"name":    sv.Items[0].Name,
 		"phone":   sv.Items[0].Phone,
-		"email":   sv.Items[0].Email,
 		"address": sv.Items[0].Address,
 	}
 
@@ -121,12 +118,11 @@ func (sv *CustomerService) Update() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "UPDATE Customer SET customer_name=@name, customer_phone=@phone, customer_email=@email, customer_address=@address WHERE customer_id=@id;"
+	sql := "UPDATE Customer SET customer_name=@name, customer_phone=@phone, customer_address=@address WHERE customer_id=@id;"
 	args := pgx.NamedArgs{
 		"id":      sv.Items[0].Id,
 		"name":    sv.Items[0].Name,
 		"phone":   sv.Items[0].Phone,
-		"email":   sv.Items[0].Email,
 		"address": sv.Items[0].Address,
 	}
 	// Execute sql command

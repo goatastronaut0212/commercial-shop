@@ -10,7 +10,9 @@ var router = gin.Default()
 func Run(port string) {
 	getRoutes()
 	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
 	config.AllowMethods = []string{"GET", "POST", "PATCH", "DELETE"}
+	config.AllowHeaders = []string{"Origin"}
 	router.Use(cors.New(config))
 	router.Run(":" + port)
 }

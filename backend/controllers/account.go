@@ -22,7 +22,7 @@ func GetAccount(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get account value"})
 		return
 	}
-	c.JSON(http.StatusOK, data.Items)
+	c.JSON(http.StatusOK, data.Items[0])
 }
 
 func GetAllAccount(c *gin.Context) {
@@ -63,7 +63,7 @@ func CreateAccount(c *gin.Context) {
 	// Execute method and send status request to user
 	err := data.Create()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "create account successfully!"})
@@ -76,7 +76,7 @@ func UpdateAccount(c *gin.Context) {
 	data.Items[0].Username = c.Param("username")
 
 	// Get passing values options
-	password_option, displayname_option, roleid_option := true, true, true
+	password_option, displayname_option, roleid_option, email_option := true, true, true, true
 	if data.Items[0].Password == "" {
 		password_option = false
 	}
@@ -86,9 +86,12 @@ func UpdateAccount(c *gin.Context) {
 	if data.Items[0].RoleId == 0 {
 		roleid_option = false
 	}
+	if data.Items[0].Email == "" {
+		email_option = false
+	}
 
 	// Execute method and send status request to user
-	err := data.Update(&password_option, &displayname_option, &roleid_option)
+	err := data.Update(&password_option, &displayname_option, &roleid_option, &email_option)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update account!"})
 		return

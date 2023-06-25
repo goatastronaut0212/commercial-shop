@@ -39,7 +39,6 @@ func Test_CreateCustomer(t *testing.T) {
 			Id:      "VIP03",
 			Name:    "Khoa22",
 			Phone:   "none",
-			Email:   "jsjsjsjsjs@sasas.com",
 			Address: "TP HCM",
 		}},
 	}
@@ -58,7 +57,6 @@ func Test_UpdateCustomer(t *testing.T) {
 			Id:      "VIP03",
 			Name:    "Khoa22",
 			Phone:   "0111432389",
-			Email:   "jsjsjsjsjs@sasas.com",
 			Address: "TP HCM",
 		}},
 	}

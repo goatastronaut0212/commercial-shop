@@ -11,7 +11,7 @@ CREATE TABLE Category (
 CREATE TABLE Product (
     product_id      VARCHAR(20)  NOT NULL,
     category_id     VARCHAR(20)  NOT NULL,
-    product_name    VARCHAR(100)  DEFAULT 'Chưa có thông tin',
+    product_name    VARCHAR(100) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (product_id),
     CONSTRAINT fk_category_id_for_product
         FOREIGN KEY (category_id)
@@ -24,10 +24,10 @@ CREATE TABLE ProductDetail (
     product_color        VARCHAR(20)  DEFAULT 'Chưa có thông tin',
     product_fabric       VARCHAR(20)  DEFAULT 'Chưa có thông tin',
     product_size         VARCHAR(4)   DEFAULT '',
-    product_form         VARCHAR(10)  DEFAULT 'Chưa có thông tin',
+    product_form         VARCHAR(20)  DEFAULT '',
     product_amount       INT          CHECK (product_amount >= 0) DEFAULT 0,
     product_price        INT          DEFAULT 0,
-    product_description  VARCHAR(400) DEFAULT 'Chưa có thông tin',
+    product_description  VARCHAR(200) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (product_detail_id),
     CONSTRAINT fk_product_id_for_product_detail
         FOREIGN KEY (product_id)
@@ -52,9 +52,11 @@ CREATE TABLE AccountRole (
 
 CREATE TABLE Account (
     account_username    VARCHAR(20)  NOT NULL,
+    role_id             INT NOT NULL,
     account_password    VARCHAR(200) NOT NULL,
     account_displayname VARCHAR(100) DEFAULT '',
-    role_id             INT NOT NULL,
+    account_email       VARCHAR(200) DEFAULT '',
+    account_active      INT          NOT NULL DEFAULT 0 CHECK (account_active=0 OR account_active=1),
     PRIMARY KEY (account_username),
     CONSTRAINT fk_role_id_for_account
         FOREIGN KEY (role_id)
