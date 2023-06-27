@@ -8,7 +8,30 @@ import (
 
 	"commercial-shop.com/models"
 	"commercial-shop.com/services"
+	"commercial-shop.com/utils"
 )
+
+func CreateAccount(c *gin.Context) {
+	// Create service and assign to data
+	data := services.AccountService{Items: []models.Account{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Encrypt password
+	encryptedPass, err := utils.HashPassword(data.Items[0].Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account"})
+		return
+	}
+	data.Items[0].Password = encryptedPass
+
+	// Execute method and send status request to user
+	err = data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create account successfully!"})
+}
 
 func GetAccount(c *gin.Context) {
 	// Create service and assign to data
@@ -17,7 +40,9 @@ func GetAccount(c *gin.Context) {
 	}}}
 
 	// Execute method and send status request to user
-	err := data.Get()
+	login_flag := false
+	userinfo_flag := false
+	err := data.Get(&login_flag, &userinfo_flag)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "can't get account value"})
 		return
@@ -55,18 +80,49 @@ func GetAllAccount(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateAccount(c *gin.Context) {
+func GetInfoAccount(c *gin.Context) {
 	// Create service and assign to data
-	data := services.AccountService{Items: []models.Account{{}}}
-	c.ShouldBindJSON(&data.Items[0])
+	data := services.AccountService{Items: []models.Account{{
+		Username: c.Param("username"),
+	}}}
 
 	// Execute method and send status request to user
-	err := data.Create()
+	login_flag := false
+	userinfo_flag := true
+	err := data.Get(&login_flag, &userinfo_flag)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Please enter username or password again!"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": "create account successfully!"})
+	c.JSON(http.StatusOK, gin.H{"message": "Login successfully!"})
+}
+
+func GetLoginAccount(c *gin.Context) {
+	// Get input data from user
+	input := models.Account{}
+	c.ShouldBind(&input)
+
+	// Create service and assign to data
+	data := services.AccountService{Items: []models.Account{{
+		Username: input.Username,
+	}}}
+
+	// Execute method and send status request to user
+	login_flag := false
+	userinfo_flag := false
+	err := data.Get(&login_flag, &userinfo_flag)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Please enter username or password again!"})
+		return
+	}
+
+	// Check password input and encrypted password
+	if utils.CheckPasswordHash(input.Password, data.Items[0].Password) == false {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Please enter username or password again!"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Login successfully!"})
 }
 
 func UpdateAccount(c *gin.Context) {
@@ -77,9 +133,19 @@ func UpdateAccount(c *gin.Context) {
 
 	// Get passing values options
 	password_option, displayname_option, roleid_option, email_option := true, true, true, true
+
+	// If password have then encrypt it and send to database
 	if data.Items[0].Password == "" {
 		password_option = false
+	} else {
+		encryptedPass, err := utils.HashPassword(data.Items[0].Password)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+		data.Items[0].Password = encryptedPass
 	}
+
 	if data.Items[0].DisplayName == "" {
 		displayname_option = false
 	}
@@ -93,7 +159,7 @@ func UpdateAccount(c *gin.Context) {
 	// Execute method and send status request to user
 	err := data.Update(&password_option, &displayname_option, &roleid_option, &email_option)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update account!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update account successfully!"})

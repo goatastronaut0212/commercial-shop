@@ -52,7 +52,7 @@ CREATE TABLE AccountRole (
 
 CREATE TABLE Account (
     account_username    VARCHAR(20)  NOT NULL,
-    role_id             INT NOT NULL,
+    role_id             INT          NOT NULL,
     account_password    VARCHAR(200) NOT NULL,
     account_displayname VARCHAR(100) DEFAULT '',
     account_email       VARCHAR(200) DEFAULT '',
