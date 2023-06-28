@@ -6,6 +6,37 @@ import (
 	"commercial-shop.com/models"
 )
 
+func Test_CreateAccount(t *testing.T) {
+	// Create service and assign to data
+	data := AccountService{
+		Items: []models.Account{{
+			Username:    "Khoa999",
+			Password:    "1232",
+			DisplayName: "Khoa",
+			RoleId:      1,
+		}},
+	}
+
+	// Execute method and if error happen send error
+	err := data.Create()
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+}
+
+func Test_DeleteAccount(t *testing.T) {
+	// Create service and assign to data
+	data := AccountService{Items: []models.Account{{
+		Username: "Khoa999",
+	}}}
+
+	// Execute method and if error happen send error
+	err := data.Delete()
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+}
+
 func Test_GetAccount(t *testing.T) {
 	// Create service and assign to data
 	data := AccountService{Items: []models.Account{{
@@ -13,7 +44,9 @@ func Test_GetAccount(t *testing.T) {
 	}}}
 
 	// Execute method and if error happen send error
-	err := data.Get()
+	login_flag := false
+	userinfo_flag := false
+	err := data.Get(&login_flag, &userinfo_flag)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
@@ -32,52 +65,34 @@ func Test_GetAllAccount(t *testing.T) {
 	}
 }
 
-func Test_CreateAccount(t *testing.T) {
-	// Create service and assign to data
-	data := AccountService{
-		Items: []models.Account{{
-			Username:    "Khoa999",
-			CustomerId:  "VIP03",
-			Password:    "1232",
-			DisplayName: "Khoa",
-			RoleId:      1,
-		}},
-	}
-
-	// Execute method and if error happen send error
-	err := data.Create()
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
-}
-
 func Test_UpdateAccount(t *testing.T) {
 	// Create service and assign to data
 	data := AccountService{
 		Items: []models.Account{{
 			Username:    "Khoa999",
-			CustomerId:  "VIP03",
 			Password:    "123",
 			DisplayName: "Updated",
-			RoleId:      1,
+			RoleId:      0,
 		}},
 	}
 
-	// Execute method and if error happen send error
-	err := data.Update()
-	if err != nil {
-		t.Fatalf("Error: %v", err)
+	// Get passing values options
+	password_option, displayname_option, roleid_option, email_option := true, true, true, true
+	if data.Items[0].Password == "" {
+		password_option = false
 	}
-}
-
-func Test_DeleteAccount(t *testing.T) {
-	// Create service and assign to data
-	data := AccountService{Items: []models.Account{{
-		Username: "Khoa999",
-	}}}
+	if data.Items[0].DisplayName == "" {
+		displayname_option = false
+	}
+	if data.Items[0].RoleId == 0 {
+		roleid_option = false
+	}
+	if data.Items[0].Email == "" {
+		email_option = false
+	}
 
 	// Execute method and if error happen send error
-	err := data.Delete()
+	err := data.Update(&password_option, &displayname_option, &roleid_option, &email_option)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

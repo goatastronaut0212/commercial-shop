@@ -6,10 +6,10 @@ import (
 	"commercial-shop.com/models"
 )
 
-func Test_GetCustomer(t *testing.T) {
+func Test_GetBillStatus(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := BillStatusService{Items: []models.BillStatus{{
+		Id: 3,
 	}}}
 
 	// Execute method and if error happen send error
@@ -19,11 +19,11 @@ func Test_GetCustomer(t *testing.T) {
 	}
 }
 
-func Test_GetAllCustomer(t *testing.T) {
+func Test_GetAllBillStatus(t *testing.T) {
 	// Create limit, page, service and assign to data
 	limit := 10
 	page := 1
-	data := CustomerService{}
+	data := BillStatusService{}
 
 	// Execute method and if error happen send error
 	err := data.GetAll(&limit, &page)
@@ -32,14 +32,12 @@ func Test_GetAllCustomer(t *testing.T) {
 	}
 }
 
-func Test_CreateCustomer(t *testing.T) {
+func Test_CreateBillStatus(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "none",
-			Address: "TP HCM",
+	data := BillStatusService{
+		Items: []models.BillStatus{{
+			Id:          3,
+			Description: "Vô dụng",
 		}},
 	}
 
@@ -50,14 +48,12 @@ func Test_CreateCustomer(t *testing.T) {
 	}
 }
 
-func Test_UpdateCustomer(t *testing.T) {
+func Test_UpdateBillStatus(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "0111432389",
-			Address: "TP HCM",
+	data := BillStatusService{
+		Items: []models.BillStatus{{
+			Id:          3,
+			Description: "Vô dụng theo mặc định",
 		}},
 	}
 
@@ -68,10 +64,10 @@ func Test_UpdateCustomer(t *testing.T) {
 	}
 }
 
-func Test_DeleteCustomer(t *testing.T) {
+func Test_DeleteBillStatus(t *testing.T) {
 	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
+	data := BillStatusService{Items: []models.BillStatus{{
+		Id: 3,
 	}}}
 
 	// Execute method and if error happen send error
