@@ -13,6 +13,52 @@ type CustomerService struct {
 	Items []models.Customer
 }
 
+func (sv *CustomerService) Create() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL command
+	sql := "INSERT INTO Customer VALUES (@id, @name, @phone, @address);"
+	args := pgx.NamedArgs{
+		"id":      sv.Items[0].Id,
+		"name":    sv.Items[0].Name,
+		"phone":   sv.Items[0].Phone,
+		"address": sv.Items[0].Address,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *CustomerService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM Customer WHERE customer_id='" + sv.Items[0].Id + "';"
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (sv *CustomerService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -83,32 +129,6 @@ func (sv *CustomerService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *CustomerService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL command
-	sql := "INSERT INTO Customer VALUES (@id, @name, @phone, @address);"
-	args := pgx.NamedArgs{
-		"id":      sv.Items[0].Id,
-		"name":    sv.Items[0].Name,
-		"phone":   sv.Items[0].Phone,
-		"address": sv.Items[0].Address,
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (sv *CustomerService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -127,26 +147,6 @@ func (sv *CustomerService) Update() error {
 	}
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *CustomerService) Delete() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "DELETE FROM Customer WHERE customer_id='" + sv.Items[0].Id + "';"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql)
 	if err != nil {
 		return err
 	}

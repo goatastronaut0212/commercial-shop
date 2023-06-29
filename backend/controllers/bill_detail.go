@@ -10,6 +10,35 @@ import (
 	"commercial-shop.com/services"
 )
 
+func CreateBillDetail(c *gin.Context) {
+	// Create service and assign to data
+	data := services.BillDetailService{Items: []models.BillDetail{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Execute method and send status request to user
+	err := data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create bill detail!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create bill detail successfully!"})
+}
+
+func DeleteBillDetail(c *gin.Context) {
+	// Create service and assign to data
+	data := services.BillDetailService{Items: []models.BillDetail{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete bill detail!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete bill detail successfully!"})
+}
+
 func GetBillDetail(c *gin.Context) {
 	// Create service and assign to data
 	data := services.BillDetailService{Items: []models.BillDetail{{
@@ -55,20 +84,6 @@ func GetAllBillDetail(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateBillDetail(c *gin.Context) {
-	// Create service and assign to data
-	data := services.BillDetailService{Items: []models.BillDetail{{}}}
-	c.ShouldBindJSON(&data.Items[0])
-
-	// Execute method and send status request to user
-	err := data.Create()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create bill detail!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "create bill detail successfully!"})
-}
-
 func UpdateBillDetail(c *gin.Context) {
 	// Create service and assign to data
 	data := services.BillDetailService{Items: []models.BillDetail{{}}}
@@ -82,19 +97,4 @@ func UpdateBillDetail(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update bill detail successfully!"})
-}
-
-func DeleteBillDetail(c *gin.Context) {
-	// Create service and assign to data
-	data := services.BillDetailService{Items: []models.BillDetail{{
-		Id: c.Param("id"),
-	}}}
-
-	// Execute method and send status request to user
-	err := data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete bill detail!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete bill detail successfully!"})
 }

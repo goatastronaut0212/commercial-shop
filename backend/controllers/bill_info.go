@@ -11,6 +11,35 @@ import (
 	"commercial-shop.com/services"
 )
 
+func CreateBillInfo(c *gin.Context) {
+	// Create service and assign to data
+	data := services.BillInfoService{Items: []models.BillInfo{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Execute method and send status request to user
+	err := data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create bill info!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create bill info successfully!"})
+}
+
+func DeleteBillInfo(c *gin.Context) {
+	// Create service and assign to data
+	data := services.BillInfoService{Items: []models.BillInfo{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete bill info!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete bill info successfully!"})
+}
+
 func GetBillInfo(c *gin.Context) {
 	// Create service and assign to data
 	data := services.BillInfoService{Items: []models.BillInfo{{
@@ -57,20 +86,6 @@ func GetAllBillInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateBillInfo(c *gin.Context) {
-	// Create service and assign to data
-	data := services.BillInfoService{Items: []models.BillInfo{{}}}
-	c.ShouldBindJSON(&data.Items[0])
-
-	// Execute method and send status request to user
-	err := data.Create()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create bill info!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "create bill info successfully!"})
-}
-
 func UpdateBillInfo(c *gin.Context) {
 	// Create service and assign to data
 	data := services.BillInfoService{Items: []models.BillInfo{{}}}
@@ -84,19 +99,4 @@ func UpdateBillInfo(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update bill info successfully!"})
-}
-
-func DeleteBillInfo(c *gin.Context) {
-	// Create service and assign to data
-	data := services.BillInfoService{Items: []models.BillInfo{{
-		Id: c.Param("id"),
-	}}}
-
-	// Execute method and send status request to user
-	err := data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete bill info!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete bill info successfully!"})
 }

@@ -13,6 +13,51 @@ type ProductImageService struct {
 	Items []models.ProductImage
 }
 
+func (sv *ProductImageService) Create() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "INSERT INTO ProductImage VALUES (@id, @idProductDetail, @image);"
+	args := pgx.NamedArgs{
+		"id":              sv.Items[0].Id,
+		"idProductDetail": sv.Items[0].IdProductDetail,
+		"image":           sv.Items[0].Image,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *ProductImageService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM ProductImage WHERE product_image_id='" + sv.Items[0].Id + "';"
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (sv *ProductImageService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -81,41 +126,6 @@ func (sv *ProductImageService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *ProductImageService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := ""
-	args := pgx.NamedArgs{}
-	if sv.Items[0].Image == nil {
-		sql = "INSERT INTO ProductImage (product_image_id, product_detail_id) VALUES (@id, @idProductDetail);"
-		args = pgx.NamedArgs{
-			"id":              sv.Items[0].Id,
-			"idProductDetail": sv.Items[0].IdProductDetail,
-		}
-	} else {
-		sql = "INSERT INTO ProductImage VALUES (@id, @idProductDetail, @image);"
-		args = pgx.NamedArgs{
-			"id":              sv.Items[0].Id,
-			"idProductDetail": sv.Items[0].IdProductDetail,
-			"image":           sv.Items[0].Image,
-		}
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (sv *ProductImageService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -144,26 +154,6 @@ func (sv *ProductImageService) Update() error {
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *ProductImageService) Delete() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "DELETE FROM ProductImage WHERE product_image_id='" + sv.Items[0].Id + "';"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql)
 	if err != nil {
 		return err
 	}

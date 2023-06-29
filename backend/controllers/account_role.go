@@ -10,6 +10,39 @@ import (
 	"commercial-shop.com/services"
 )
 
+func CreateAccountRole(c *gin.Context) {
+	// Create service and assign to data
+	data := services.AccountRoleService{Items: []models.AccountRole{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Execute method and send status request to user
+	err := data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account role!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create account role successfully!"})
+}
+
+func DeleteAccountRole(c *gin.Context) {
+	// Create service and assign to data
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "bad request input"})
+	}
+	data := services.AccountRoleService{Items: []models.AccountRole{{
+		Id: id,
+	}}}
+
+	// Execute method and send status request to user
+	err = data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete account role!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete account role successfully!"})
+}
+
 func GetAccountRole(c *gin.Context) {
 	// Create service and assign to data
 	id, err := strconv.Atoi(c.Param("id"))
@@ -59,20 +92,6 @@ func GetAllAccountRole(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateAccountRole(c *gin.Context) {
-	// Create service and assign to data
-	data := services.AccountRoleService{Items: []models.AccountRole{{}}}
-	c.ShouldBindJSON(&data.Items[0])
-
-	// Execute method and send status request to user
-	err := data.Create()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create account role!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "create account role successfully!"})
-}
-
 func UpdateAccountRole(c *gin.Context) {
 	// Create service and assign to data
 	data := services.AccountRoleService{Items: []models.AccountRole{{}}}
@@ -90,23 +109,4 @@ func UpdateAccountRole(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update account role successfully!"})
-}
-
-func DeleteAccountRole(c *gin.Context) {
-	// Create service and assign to data
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": "bad request input"})
-	}
-	data := services.AccountRoleService{Items: []models.AccountRole{{
-		Id: id,
-	}}}
-
-	// Execute method and send status request to user
-	err = data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete account role!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete account role successfully!"})
 }

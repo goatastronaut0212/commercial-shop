@@ -11,6 +11,35 @@ import (
 	"commercial-shop.com/services"
 )
 
+func CreateProductImage(c *gin.Context) {
+	// Create service and assign to data
+	data := services.ProductImageService{Items: []models.ProductImage{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Execute method and send status request to user
+	err := data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product image!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create product image successfully!"})
+}
+
+func DeleteProductImage(c *gin.Context) {
+	// Create service and assign to data
+	data := services.ProductImageService{Items: []models.ProductImage{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product image!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete product image successfully!"})
+}
+
 func GetProductImage(c *gin.Context) {
 	// Create service and assign to data
 	data := services.ProductImageService{Items: []models.ProductImage{{
@@ -57,20 +86,6 @@ func GetAllProductImage(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateProductImage(c *gin.Context) {
-	// Create service and assign to data
-	data := services.ProductImageService{Items: []models.ProductImage{{}}}
-	c.ShouldBindJSON(&data.Items[0])
-
-	// Execute method and send status request to user
-	err := data.Create()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product image!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "create product image successfully!"})
-}
-
 func UpdateProductImage(c *gin.Context) {
 	// Create service and assign to data
 	data := services.ProductImageService{Items: []models.ProductImage{{}}}
@@ -84,19 +99,4 @@ func UpdateProductImage(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update product image successfully!"})
-}
-
-func DeleteProductImage(c *gin.Context) {
-	// Create service and assign to data
-	data := services.ProductImageService{Items: []models.ProductImage{{
-		Id: c.Param("id"),
-	}}}
-
-	// Execute method and send status request to user
-	err := data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product image!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete product image successfully!"})
 }

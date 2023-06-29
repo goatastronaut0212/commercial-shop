@@ -7,6 +7,36 @@ import (
 	"commercial-shop.com/models"
 )
 
+func Test_CreateBillInfo(t *testing.T) {
+	// Create service and assign to data
+	data := BillInfoService{Items: []models.BillInfo{{
+		Id:         "001",
+		CustomerId: "VIP03",
+		Date:       time.Now(),
+		Status:     0,
+		Payment:    1,
+	}}}
+
+	// Execute method and if error happen send error
+	err := data.Create()
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+}
+
+func Test_DeleteBillInfo(t *testing.T) {
+	// Create service and assign to data
+	data := BillInfoService{Items: []models.BillInfo{{
+		Id: "001",
+	}}}
+
+	// Execute method and if error happen send error
+	err := data.Delete()
+	if err != nil {
+		t.Fatalf("Err: %v", err)
+	}
+}
+
 func Test_GetBillInfo(t *testing.T) {
 	// Create service and assign to data
 	data := BillInfoService{Items: []models.BillInfo{{
@@ -33,23 +63,6 @@ func Test_GetAllBillInfo(t *testing.T) {
 	}
 }
 
-func Test_CreateBillInfo(t *testing.T) {
-	// Create service and assign to data
-	data := BillInfoService{Items: []models.BillInfo{{
-		Id:         "001",
-		CustomerId: "VIP03",
-		Date:       time.Now(),
-		Status:     0,
-		Payment:    1,
-	}}}
-
-	// Execute method and if error happen send error
-	err := data.Create()
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
-}
-
 func Test_UpdateBillInfo(t *testing.T) {
 	// Create service and assign to data
 	data := BillInfoService{Items: []models.BillInfo{{
@@ -64,18 +77,5 @@ func Test_UpdateBillInfo(t *testing.T) {
 	err := data.Update()
 	if err != nil {
 		t.Fatalf("Error: %v", err)
-	}
-}
-
-func Test_DeleteBillInfo(t *testing.T) {
-	// Create service and assign to data
-	data := BillInfoService{Items: []models.BillInfo{{
-		Id: "001",
-	}}}
-
-	// Execute method and if error happen send error
-	err := data.Delete()
-	if err != nil {
-		t.Fatalf("Err: %v", err)
 	}
 }

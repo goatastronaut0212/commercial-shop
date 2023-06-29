@@ -13,6 +13,50 @@ type AccountRoleService struct {
 	Items []models.AccountRole
 }
 
+func (sv *AccountRoleService) Create() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd check options input
+	sql := "INSERT INTO AccountRole VALUES (@id, @description);"
+	args := pgx.NamedArgs{
+		"id":          sv.Items[0].Id,
+		"description": sv.Items[0].Description,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *AccountRoleService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM AccountRole WHERE role_id=" + strconv.Itoa(sv.Items[0].Id) + ";"
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (sv *AccountRoleService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -79,34 +123,6 @@ func (sv *AccountRoleService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *AccountRoleService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd check options input
-	sql := "INSERT INTO AccountRole (role_id) VALUES (@id);"
-	args := pgx.NamedArgs{
-		"id": sv.Items[0].Id,
-	}
-
-	if sv.Items[0].Description != "" {
-		sql = "INSERT INTO AccountRole VALUES (@id, @description);"
-		args["description"] = sv.Items[0].Description
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (sv *AccountRoleService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -124,26 +140,6 @@ func (sv *AccountRoleService) Update() error {
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *AccountRoleService) Delete() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "DELETE FROM AccountRole WHERE role_id=" + strconv.Itoa(sv.Items[0].Id) + ";"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql)
 	if err != nil {
 		return err
 	}

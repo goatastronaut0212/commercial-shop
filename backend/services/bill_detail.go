@@ -14,6 +14,54 @@ type BillDetailService struct {
 	Items []models.BillDetail
 }
 
+func (sv *BillDetailService) Create() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "INSERT INTO BillDetail VALUES (@id, @bill_id, @product_detail_id, @discount_id, @amount);"
+	args := pgx.NamedArgs{
+		"id":                sv.Items[0].Id,
+		"bill_id":           sv.Items[0].BillId,
+		"product_detail_id": sv.Items[0].ProductDetailId,
+		"discount_id":       sv.Items[0].DiscountId,
+		"amount":            sv.Items[0].Amount,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	fmt.Println(err)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *BillDetailService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM BillDetail WHERE bill_detail_id='" + sv.Items[0].Id + "';"
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (sv *BillDetailService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -86,34 +134,6 @@ func (sv *BillDetailService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *BillDetailService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "INSERT INTO BillDetail VALUES (@id, @bill_id, @product_detail_id, @discount_id, @amount);"
-	args := pgx.NamedArgs{
-		"id":                sv.Items[0].Id,
-		"bill_id":           sv.Items[0].BillId,
-		"product_detail_id": sv.Items[0].ProductDetailId,
-		"discount_id":       sv.Items[0].DiscountId,
-		"amount":            sv.Items[0].Amount,
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	fmt.Println(err)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (sv *BillDetailService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -134,26 +154,6 @@ func (sv *BillDetailService) Update() error {
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *BillDetailService) Delete() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "DELETE FROM BillDetail WHERE bill_detail_id='" + sv.Items[0].Id + "';"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql)
 	if err != nil {
 		return err
 	}
