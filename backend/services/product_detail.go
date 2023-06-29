@@ -13,6 +13,56 @@ type ProductDetailService struct {
 	Items []models.ProductDetail
 }
 
+func (sv *ProductDetailService) Create() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "INSERT INTO ProductDetail VALUES (@id, @idProduct, @color, @fabric, @size, @price, @amount, @description);"
+	args := pgx.NamedArgs{
+		"id":          sv.Items[0].Id,
+		"idProduct":   sv.Items[0].IdProduct,
+		"color":       sv.Items[0].Color,
+		"fabric":      sv.Items[0].Fabric,
+		"size":        sv.Items[0].Size,
+		"price":       sv.Items[0].Price,
+		"amount":      sv.Items[0].Amount,
+		"description": sv.Items[0].Description,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *ProductDetailService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM ProductDetail WHERE product_detail_id='" + sv.Items[0].Id + "';"
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (sv *ProductDetailService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -90,36 +140,6 @@ func (sv *ProductDetailService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *ProductDetailService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "INSERT INTO ProductDetail VALUES (@id, @idProduct, @color, @fabric, @size, @price, @amount, @description);"
-	args := pgx.NamedArgs{
-		"id":          sv.Items[0].Id,
-		"idProduct":   sv.Items[0].IdProduct,
-		"color":       sv.Items[0].Color,
-		"fabric":      sv.Items[0].Fabric,
-		"size":        sv.Items[0].Size,
-		"price":       sv.Items[0].Price,
-		"amount":      sv.Items[0].Amount,
-		"description": sv.Items[0].Description,
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (sv *ProductDetailService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -143,26 +163,6 @@ func (sv *ProductDetailService) Update() error {
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *ProductDetailService) Delete() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "DELETE FROM ProductDetail WHERE product_detail_id='" + sv.Items[0].Id + "';"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql)
 	if err != nil {
 		return err
 	}

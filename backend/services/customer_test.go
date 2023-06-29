@@ -6,6 +6,37 @@ import (
 	"commercial-shop.com/models"
 )
 
+func Test_CreateCustomer(t *testing.T) {
+	// Create service and assign to data
+	data := CustomerService{
+		Items: []models.Customer{{
+			Id:      "VIP03",
+			Name:    "Khoa22",
+			Phone:   "none",
+			Address: "TP HCM",
+		}},
+	}
+
+	// Execute method and if error happen send error
+	err := data.Create()
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+}
+
+func Test_DeleteCustomer(t *testing.T) {
+	// Create service and assign to data
+	data := CustomerService{Items: []models.Customer{{
+		Id: "VIP03",
+	}}}
+
+	// Execute method and if error happen send error
+	err := data.Delete()
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+}
+
 func Test_GetCustomer(t *testing.T) {
 	// Create service and assign to data
 	data := CustomerService{Items: []models.Customer{{
@@ -32,24 +63,6 @@ func Test_GetAllCustomer(t *testing.T) {
 	}
 }
 
-func Test_CreateCustomer(t *testing.T) {
-	// Create service and assign to data
-	data := CustomerService{
-		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "none",
-			Address: "TP HCM",
-		}},
-	}
-
-	// Execute method and if error happen send error
-	err := data.Create()
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
-}
-
 func Test_UpdateCustomer(t *testing.T) {
 	// Create service and assign to data
 	data := CustomerService{
@@ -63,19 +76,6 @@ func Test_UpdateCustomer(t *testing.T) {
 
 	// Execute method and if error happen send error
 	err := data.Update()
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
-}
-
-func Test_DeleteCustomer(t *testing.T) {
-	// Create service and assign to data
-	data := CustomerService{Items: []models.Customer{{
-		Id: "VIP03",
-	}}}
-
-	// Execute method and if error happen send error
-	err := data.Delete()
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

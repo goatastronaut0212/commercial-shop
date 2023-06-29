@@ -13,6 +13,50 @@ type CategoryService struct {
 	Items []models.Category
 }
 
+func (sv *CategoryService) Create() error {
+	// Connect to servicebase and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "INSERT INTO Category VALUES (@id, @name);"
+	args := pgx.NamedArgs{
+		"id":   sv.Items[0].Id,
+		"name": sv.Items[0].Name,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *CategoryService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM Category WHERE category_id='" + sv.Items[0].Id + "';"
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (sv *CategoryService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -73,39 +117,6 @@ func (sv *CategoryService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *CategoryService) Create() error {
-	// Connect to servicebase and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := ""
-	args := pgx.NamedArgs{}
-	if sv.Items[0].Name == "" {
-		sql = "INSERT INTO Category VALUES (@id);"
-		args = pgx.NamedArgs{
-			"id": sv.Items[0].Id,
-		}
-	} else {
-		sql = "INSERT INTO Category VALUES (@id, @name);"
-		args = pgx.NamedArgs{
-			"id":   sv.Items[0].Id,
-			"name": sv.Items[0].Name,
-		}
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (sv *CategoryService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -123,26 +134,6 @@ func (sv *CategoryService) Update() error {
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *CategoryService) Delete() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "DELETE FROM Category WHERE category_id='" + sv.Items[0].Id + "';"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql)
 	if err != nil {
 		return err
 	}

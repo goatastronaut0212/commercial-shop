@@ -33,6 +33,21 @@ func CreateAccount(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": "create account successfully!"})
 }
 
+func DeleteAccount(c *gin.Context) {
+	// Create service and assign to data
+	data := services.AccountService{Items: []models.Account{{
+		Username: c.Param("username"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete account!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete account successfully!"})
+}
+
 func GetAccount(c *gin.Context) {
 	// Create service and assign to data
 	data := services.AccountService{Items: []models.Account{{
@@ -163,19 +178,4 @@ func UpdateAccount(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update account successfully!"})
-}
-
-func DeleteAccount(c *gin.Context) {
-	// Create service and assign to data
-	data := services.AccountService{Items: []models.Account{{
-		Username: c.Param("username"),
-	}}}
-
-	// Execute method and send status request to user
-	err := data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete account!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete account successfully!"})
 }

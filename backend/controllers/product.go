@@ -10,6 +10,35 @@ import (
 	"commercial-shop.com/services"
 )
 
+func CreateProduct(c *gin.Context) {
+	// Create service and assign to data
+	data := services.ProductService{Items: []models.Product{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Execute method and send status request to user
+	err := data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create product successfully!"})
+}
+
+func DeleteProduct(c *gin.Context) {
+	// Create service and assign to data
+	data := services.ProductService{Items: []models.Product{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete product successfully!"})
+}
+
 func GetProduct(c *gin.Context) {
 	// Create service and assign to data
 	data := services.ProductService{Items: []models.Product{{
@@ -55,46 +84,27 @@ func GetAllProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateProduct(c *gin.Context) {
-	// Create service and assign to data
-	data := services.ProductService{Items: []models.Product{{}}}
-	c.ShouldBindJSON(&data.Items[0])
-
-	// Execute method and send status request to user
-	err := data.Create()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "create product successfully!"})
-}
-
 func UpdateProduct(c *gin.Context) {
 	// Create service and assign to data
 	data := services.ProductService{Items: []models.Product{{}}}
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Id = c.Param("id")
 
+	// Check options
+	category_option, name_option := true, true
+
+	if data.Items[0].IdCategory == "" {
+		category_option = false
+	}
+	if data.Items[0].Name == "" {
+		name_option = false
+	}
+
 	// Execute method and send status request to user
-	err := data.Update()
+	err := data.Update(&category_option, &name_option)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product!"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update product successfully!"})
-}
-
-func DeleteProduct(c *gin.Context) {
-	// Create service and assign to data
-	data := services.ProductService{Items: []models.Product{{
-		Id: c.Param("id"),
-	}}}
-
-	// Execute method and send status request to user
-	err := data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete product successfully!"})
 }

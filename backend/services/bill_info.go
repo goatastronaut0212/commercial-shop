@@ -14,6 +14,54 @@ type BillInfoService struct {
 	Items []models.BillInfo
 }
 
+func (sv *BillInfoService) Create() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "INSERT INTO BillInfo VALUES (@id, @customer_id, @date, @status, @payment);"
+	args := pgx.NamedArgs{
+		"id":          sv.Items[0].Id,
+		"customer_id": sv.Items[0].CustomerId,
+		"date":        sv.Items[0].Date,
+		"status":      sv.Items[0].Status,
+		"payment":     sv.Items[0].Payment,
+	}
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql, args)
+	fmt.Println(err)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv *BillInfoService) Delete() error {
+	// Connect to database and close after executing command
+	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// SQL commamd
+	sql := "DELETE FROM BillInfo WHERE bill_id='" + sv.Items[0].Id + "';"
+
+	// Execute sql command
+	_, err = conn.Exec(database.CTX, sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (sv *BillInfoService) Get() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -86,46 +134,6 @@ func (sv *BillInfoService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *BillInfoService) Create() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := ""
-	args := pgx.NamedArgs{}
-	if sv.Items[0].Date.IsZero() {
-		sql = "INSERT INTO BillInfo (bill_id, customer_id, bill_status, bill_payment) VALUES (@id, @customer_id, @status, @payment);"
-		args = pgx.NamedArgs{
-			"id":          sv.Items[0].Id,
-			"customer_id": sv.Items[0].CustomerId,
-			"status":      sv.Items[0].Status,
-			"payment":     sv.Items[0].Payment,
-		}
-	} else {
-		sql = "INSERT INTO BillInfo VALUES (@id, @customer_id, @date, @status, @payment);"
-		args = pgx.NamedArgs{
-			"id":          sv.Items[0].Id,
-			"customer_id": sv.Items[0].CustomerId,
-			"date":        sv.Items[0].Date,
-			"status":      sv.Items[0].Status,
-			"payment":     sv.Items[0].Payment,
-		}
-	}
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql, args)
-	fmt.Println(err)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (sv *BillInfoService) Update() error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
@@ -158,26 +166,6 @@ func (sv *BillInfoService) Update() error {
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sv *BillInfoService) Delete() error {
-	// Connect to database and close after executing command
-	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	// SQL commamd
-	sql := "DELETE FROM BillInfo WHERE bill_id='" + sv.Items[0].Id + "';"
-
-	// Execute sql command
-	_, err = conn.Exec(database.CTX, sql)
 	if err != nil {
 		return err
 	}

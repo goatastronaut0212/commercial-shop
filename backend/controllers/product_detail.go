@@ -11,6 +11,35 @@ import (
 	"commercial-shop.com/services"
 )
 
+func CreateProductDetail(c *gin.Context) {
+	// Create service and assign to data
+	data := services.ProductDetailService{Items: []models.ProductDetail{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Execute method and send status request to user
+	err := data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product detail!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create product detail successfully!"})
+}
+
+func DeleteProductDetail(c *gin.Context) {
+	// Create service and assign to data
+	data := services.ProductDetailService{Items: []models.ProductDetail{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product detail!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete product detail successfully!"})
+}
+
 func GetProductDetail(c *gin.Context) {
 	// Create service and assign to data
 	data := services.ProductDetailService{Items: []models.ProductDetail{{
@@ -57,20 +86,6 @@ func GetAllProductDetail(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateProductDetail(c *gin.Context) {
-	// Create service and assign to data
-	data := services.ProductDetailService{Items: []models.ProductDetail{{}}}
-	c.ShouldBindJSON(&data.Items[0])
-
-	// Execute method and send status request to user
-	err := data.Create()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create product detail!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "create product detail successfully!"})
-}
-
 func UpdateProductDetail(c *gin.Context) {
 	// Create service and assign to data
 	data := services.ProductDetailService{Items: []models.ProductDetail{{}}}
@@ -84,19 +99,4 @@ func UpdateProductDetail(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update product detail successfully!"})
-}
-
-func DeleteProductDetail(c *gin.Context) {
-	// Create service and assign to data
-	data := services.ProductDetailService{Items: []models.ProductDetail{{
-		Id: c.Param("id"),
-	}}}
-
-	// Execute method and send status request to user
-	err := data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete product detail!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete product detail successfully!"})
 }

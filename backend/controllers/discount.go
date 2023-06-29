@@ -10,6 +10,35 @@ import (
 	"commercial-shop.com/services"
 )
 
+func CreateDiscount(c *gin.Context) {
+	// Create service and assign to data
+	data := services.DiscountService{Items: []models.Discount{{}}}
+	c.ShouldBindJSON(&data.Items[0])
+
+	// Execute method and send status request to user
+	err := data.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create discount!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "create discount successfully!"})
+}
+
+func DeleteDiscount(c *gin.Context) {
+	// Create service and assign to data
+	data := services.DiscountService{Items: []models.Discount{{
+		Id: c.Param("id"),
+	}}}
+
+	// Execute method and send status request to user
+	err := data.Delete()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete discount!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "delete discount successfully!"})
+}
+
 func GetDiscount(c *gin.Context) {
 	// Create service and assign to data
 	data := services.DiscountService{Items: []models.Discount{{
@@ -55,20 +84,6 @@ func GetAllDiscount(c *gin.Context) {
 	c.JSON(http.StatusOK, data.Items)
 }
 
-func CreateDiscount(c *gin.Context) {
-	// Create service and assign to data
-	data := services.DiscountService{Items: []models.Discount{{}}}
-	c.ShouldBindJSON(&data.Items[0])
-
-	// Execute method and send status request to user
-	err := data.Create()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't create discount!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "create discount successfully!"})
-}
-
 func UpdateDiscount(c *gin.Context) {
 	// Create service and assign to data
 	data := services.DiscountService{Items: []models.Discount{{}}}
@@ -82,19 +97,4 @@ func UpdateDiscount(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update discount successfully!"})
-}
-
-func DeleteDiscount(c *gin.Context) {
-	// Create service and assign to data
-	data := services.DiscountService{Items: []models.Discount{{
-		Id: c.Param("id"),
-	}}}
-
-	// Execute method and send status request to user
-	err := data.Delete()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't delete discount!"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": "delete discount successfully!"})
 }
