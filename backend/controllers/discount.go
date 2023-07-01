@@ -90,8 +90,24 @@ func UpdateDiscount(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Id = c.Param("id")
 
+	// Check input options
+	description, percent, start, end := true, true, true, true
+
+	if data.Items[0].Description == "" {
+		description = false
+	}
+	if data.Items[0].Percent == -1 {
+		percent = false
+	}
+	if data.Items[0].DateStart.IsZero() {
+		start = false
+	}
+	if data.Items[0].DateEnd.IsZero() {
+		end = false
+	}
+
 	// Execute method and send status request to user
-	err := data.Update()
+	err := data.Update(&description, &percent, &start, &end)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update discount!"})
 		return

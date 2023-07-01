@@ -10,7 +10,7 @@ func Test_CreateProductImage(t *testing.T) {
 	// Create service and assign to data
 	data := ProductImageService{Items: []models.ProductImage{{
 		Id:              "3",
-		IdProductDetail: "XD32",
+		ProductDetailId: "XD32",
 		Image:           nil,
 	}}}
 
@@ -64,12 +64,13 @@ func Test_UpdateProductImage(t *testing.T) {
 	// Create service and assign to data
 	data := ProductImageService{Items: []models.ProductImage{{
 		Id:              "3",
-		IdProductDetail: "D33",
+		ProductDetailId: "D33",
 		Image:           nil,
 	}}}
 
 	// Execute method and if error happen send error
-	err := data.Update()
+	productdetailid, image := true, true
+	err := data.Update(&productdetailid, &image)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

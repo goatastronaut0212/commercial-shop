@@ -90,18 +90,18 @@ func UpdateProduct(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Id = c.Param("id")
 
-	// Check options
-	category_option, name_option := true, true
+	// Check input options
+	category, name := true, true
 
 	if data.Items[0].IdCategory == "" {
-		category_option = false
+		category = false
 	}
 	if data.Items[0].Name == "" {
-		name_option = false
+		name = false
 	}
 
 	// Execute method and send status request to user
-	err := data.Update(&category_option, &name_option)
+	err := data.Update(&category, &name)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product!"})
 		return

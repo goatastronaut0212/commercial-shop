@@ -92,8 +92,18 @@ func UpdateProductImage(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Id = c.Param("id")
 
+	// Check input options
+	productdetailid, image := true, true
+
+	if data.Items[0].ProductDetailId == "" {
+		productdetailid = false
+	}
+	if data.Items[0].Image == nil {
+		image = false
+	}
+
 	// Execute method and send status request to user
-	err := data.Update()
+	err := data.Update(&productdetailid, &image)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product image!"})
 		return

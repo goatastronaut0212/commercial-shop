@@ -43,7 +43,7 @@ type Category struct {
 }
 
 type Customer struct {
-	Id              string `json:"id"              binding:"required"`
+	Id              string `json:"id"   binding:"required"`
 	AccountUsername string `json:"accountUsername" binding:"required"`
 	Name            string `json:"name"            binding:"required"`
 	Phone           string `json:"phone"           binding:"required"`
@@ -66,10 +66,11 @@ type Product struct {
 
 type ProductDetail struct {
 	Id          string `json:"id"          binding:"required"`
-	IdProduct   string `json:"idProduct"   binding:"required"`
+	ProductId   string `json:"productId"   binding:"required"`
 	Color       string `json:"color"       binding:"required"`
 	Fabric      string `json:"fabric"      binding:"required"`
 	Size        string `json:"size"        binding:"required"`
+	Form        string `json:"form"        binding:"required"`
 	Amount      int    `json:"amount"      binding:"required"`
 	Price       int    `json:"price"       binding:"required"`
 	Description string `json:"description" binding:"required"`
@@ -77,6 +78,6 @@ type ProductDetail struct {
 
 type ProductImage struct {
 	Id              string `json:"id"              binding:"required"`
-	IdProductDetail string `json:"idProductDetail" binding:"required"`
+	ProductDetailId string `json:"productDetailId" binding:"required"`
 	Image           []byte `json:"image"           binding:"required"`
 }

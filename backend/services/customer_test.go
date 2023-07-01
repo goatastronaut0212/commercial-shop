@@ -10,10 +10,11 @@ func Test_CreateCustomer(t *testing.T) {
 	// Create service and assign to data
 	data := CustomerService{
 		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "none",
-			Address: "TP HCM",
+			Id:              "VIP03",
+			AccountUsername: "Khoa999",
+			Name:            "Khoa22",
+			Phone:           "none",
+			Address:         "TP HCM",
 		}},
 	}
 
@@ -67,15 +68,17 @@ func Test_UpdateCustomer(t *testing.T) {
 	// Create service and assign to data
 	data := CustomerService{
 		Items: []models.Customer{{
-			Id:      "VIP03",
-			Name:    "Khoa22",
-			Phone:   "0111432389",
-			Address: "TP HCM",
+			Id:              "VIP03",
+			AccountUsername: "Khoa999",
+			Name:            "Khoa22",
+			Phone:           "0111432389",
+			Address:         "TP HCM",
 		}},
 	}
 
 	// Execute method and if error happen send error
-	err := data.Update()
+	name, phone, address := true, true, true
+	err := data.Update(&name, &phone, &address)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

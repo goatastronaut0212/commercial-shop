@@ -88,7 +88,7 @@ func (sv *BillInfoService) Get() error {
 	return nil
 }
 
-func (sv *BillInfoService) GetAll(limit *int, page *int) error {
+func (sv *BillInfoService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -134,7 +134,7 @@ func (sv *BillInfoService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *BillInfoService) Update() error {
+func (sv *BillInfoService) Update(customerid, status, date, payment *bool) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -142,27 +142,45 @@ func (sv *BillInfoService) Update() error {
 	}
 	defer conn.Close()
 
-	// SQL commamd
-	sql := ""
-	args := pgx.NamedArgs{}
-	if sv.Items[0].Date.IsZero() {
-		sql = "UPDATE BillInfo SET customer_id=@customer_id, bill_status=@status, bill_payment=@payment WHERE bill_id=@id;"
-		args = pgx.NamedArgs{
-			"id":          sv.Items[0].Id,
-			"customer_id": sv.Items[0].CustomerId,
-			"status":      sv.Items[0].Status,
-			"payment":     sv.Items[0].Payment,
+	// Check input options to generate SQL command
+	sql := "UPDATE BillInfo SET "
+	args := pgx.NamedArgs{"id": sv.Items[0].Id}
+	nextoption := true
+
+	for i := 0; i < 4; i++ {
+		switch {
+		case *customerid == true:
+			sql += "customer_id=@customer_id"
+			args["customer_id"] = sv.Items[0].CustomerId
+			*customerid = false
+
+		case *status == true:
+			sql += "bill_status=@status"
+			args["status"] = sv.Items[0].Status
+			*status = false
+
+		case *date == true:
+			sql += "bill_date=@date"
+			args["date"] = sv.Items[0].Date
+			*date = false
+
+		case *payment == true:
+			sql += "bill_payment=@payment"
+			args["payment"] = sv.Items[0].Payment
+			*payment = false
+
+		default:
+			nextoption = false
 		}
-	} else {
-		sql = "UPDATE BillInfo SET customer_id=@customer_id, bill_date=@billdate, bill_status=@status, bill_payment=@payment WHERE bill_id=@id;"
-		args = pgx.NamedArgs{
-			"id":          sv.Items[0].Id,
-			"customer_id": sv.Items[0].CustomerId,
-			"date":        sv.Items[0].Date,
-			"status":      sv.Items[0].Status,
-			"payment":     sv.Items[0].Payment,
+
+		// comma false
+		if !nextoption {
+			sql = sql[:len(sql)-1]
+			break
 		}
+		sql += ","
 	}
+	sql += " WHERE bill_id=@id;"
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

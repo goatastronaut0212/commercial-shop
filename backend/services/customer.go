@@ -22,12 +22,13 @@ func (sv *CustomerService) Create() error {
 	defer conn.Close()
 
 	// SQL command
-	sql := "INSERT INTO Customer VALUES (@id, @name, @phone, @address);"
+	sql := "INSERT INTO Customer VALUES (@id, @username, @name, @phone, @address);"
 	args := pgx.NamedArgs{
-		"id":      sv.Items[0].Id,
-		"name":    sv.Items[0].Name,
-		"phone":   sv.Items[0].Phone,
-		"address": sv.Items[0].Address,
+		"id":       sv.Items[0].Id,
+		"username": sv.Items[0].AccountUsername,
+		"name":     sv.Items[0].Name,
+		"phone":    sv.Items[0].Phone,
+		"address":  sv.Items[0].Address,
 	}
 
 	// Execute sql command
@@ -73,6 +74,7 @@ func (sv *CustomerService) Get() error {
 	// Get rows from conn with SQL command
 	err = conn.QueryRow(database.CTX, sql).Scan(
 		&sv.Items[0].Id,
+		&sv.Items[0].AccountUsername,
 		&sv.Items[0].Name,
 		&sv.Items[0].Phone,
 		&sv.Items[0].Address,
@@ -84,7 +86,7 @@ func (sv *CustomerService) Get() error {
 	return nil
 }
 
-func (sv *CustomerService) GetAll(limit *int, page *int) error {
+func (sv *CustomerService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -112,6 +114,7 @@ func (sv *CustomerService) GetAll(limit *int, page *int) error {
 
 		err := rows.Scan(
 			&sv.Items[i].Id,
+			&sv.Items[i].AccountUsername,
 			&sv.Items[i].Name,
 			&sv.Items[i].Phone,
 			&sv.Items[i].Address,
@@ -122,6 +125,7 @@ func (sv *CustomerService) GetAll(limit *int, page *int) error {
 
 		i++
 	}
+
 	if err := rows.Err(); err != nil {
 		return err
 	}
@@ -129,7 +133,7 @@ func (sv *CustomerService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *CustomerService) Update() error {
+func (sv *CustomerService) Update(name, phone, address *bool) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -138,13 +142,40 @@ func (sv *CustomerService) Update() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "UPDATE Customer SET customer_name=@name, customer_phone=@phone, customer_address=@address WHERE customer_id=@id;"
-	args := pgx.NamedArgs{
-		"id":      sv.Items[0].Id,
-		"name":    sv.Items[0].Name,
-		"phone":   sv.Items[0].Phone,
-		"address": sv.Items[0].Address,
+	sql := "UPDATE Customer SET "
+	args := pgx.NamedArgs{"id": sv.Items[0].Id}
+	nextoption := true
+
+	for i := 0; i < 4; i++ {
+		switch {
+		case *name == true:
+			sql += "customer_name=@name"
+			args["name"] = sv.Items[0].Name
+			*name = false
+
+		case *phone == true:
+			sql += "customer_phone=@phone"
+			args["phone"] = sv.Items[0].Phone
+			*phone = false
+
+		case *address == true:
+			sql += "customer_address=@address"
+			args["address"] = sv.Items[0].Address
+			*address = false
+
+		default:
+			nextoption = false
+		}
+
+		// comma false
+		if !nextoption {
+			sql = sql[:len(sql)-1]
+			break
+		}
+		sql += ","
 	}
+	sql += " WHERE customer_id=@id;"
+
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
 	if err != nil {

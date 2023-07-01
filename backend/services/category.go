@@ -77,7 +77,7 @@ func (sv *CategoryService) Get() error {
 	return nil
 }
 
-func (sv *CategoryService) GetAll(limit *int, page *int) error {
+func (sv *CategoryService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {

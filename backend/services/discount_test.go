@@ -74,7 +74,8 @@ func Test_UpdateDiscount(t *testing.T) {
 	}}}
 
 	// Execute method and if error happen send error
-	err := data.Update()
+	description, percent, start, end := true, true, true, true
+	err := data.Update(&description, &percent, &start, &end)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

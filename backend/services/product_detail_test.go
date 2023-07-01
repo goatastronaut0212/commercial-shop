@@ -10,9 +10,10 @@ func Test_CreateProductDetail(t *testing.T) {
 	// Create service and assign to data
 	data := ProductDetailService{Items: []models.ProductDetail{{
 		Id:          "D39",
-		IdProduct:   "1",
+		ProductId:   "1",
 		Color:       "Đen",
 		Fabric:      "Vải",
+		Form:        "Ôm",
 		Size:        "39",
 		Price:       165000,
 		Amount:      100,
@@ -69,9 +70,10 @@ func Test_UpdateProductDetail(t *testing.T) {
 	// Create service and assign to data
 	data := ProductDetailService{Items: []models.ProductDetail{{
 		Id:          "D39",
-		IdProduct:   "1",
+		ProductId:   "1",
 		Color:       "Đen",
 		Fabric:      "Vải",
+		Form:        "Dãn",
 		Size:        "39",
 		Price:       165000,
 		Amount:      90,
@@ -79,7 +81,9 @@ func Test_UpdateProductDetail(t *testing.T) {
 	}}}
 
 	// Execute method and if error happen send error
-	err := data.Update()
+	productid, color, fabric, size, form, amount, price, description :=
+		true, true, true, true, true, true, true, true
+	err := data.Update(&productid, &color, &fabric, &size, &form, &amount, &price, &description)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

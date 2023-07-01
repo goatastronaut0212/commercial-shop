@@ -42,7 +42,7 @@ func DeleteCustomer(c *gin.Context) {
 func GetCustomer(c *gin.Context) {
 	// Create service and assign to data
 	data := services.CustomerService{Items: []models.Customer{{
-		Id: c.Param("id"),
+		AccountUsername: c.Param("username"),
 	}}}
 
 	// Execute method and send status request to user
@@ -90,8 +90,21 @@ func UpdateCustomer(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Id = c.Param("id")
 
+	// Check input options
+	name, phone, address := true, true, true
+
+	if data.Items[0].Name == "" {
+		name = false
+	}
+	if data.Items[0].Phone == "" {
+		phone = false
+	}
+	if data.Items[0].Address == "" {
+		address = false
+	}
+
 	// Execute method and send status request to user
-	err := data.Update()
+	err := data.Update(&name, &phone, &address)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update customer!"})
 		return

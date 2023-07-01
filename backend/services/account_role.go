@@ -80,7 +80,7 @@ func (sv *AccountRoleService) Get() error {
 	return nil
 }
 
-func (sv *AccountRoleService) GetAll(limit *int, page *int) error {
+func (sv *AccountRoleService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {

@@ -146,7 +146,7 @@ func UpdateAccount(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Username = c.Param("username")
 
-	// Get passing values options
+	// Check input options
 	password_option, displayname_option, roleid_option, email_option := true, true, true, true
 
 	// If password have then encrypt it and send to database
@@ -160,7 +160,6 @@ func UpdateAccount(c *gin.Context) {
 		}
 		data.Items[0].Password = encryptedPass
 	}
-
 	if data.Items[0].DisplayName == "" {
 		displayname_option = false
 	}

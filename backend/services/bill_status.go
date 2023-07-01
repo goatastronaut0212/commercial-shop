@@ -84,7 +84,7 @@ func (sv *BillStatusService) Get() error {
 	return nil
 }
 
-func (sv *BillStatusService) GetAll(limit *int, page *int) error {
+func (sv *BillStatusService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {

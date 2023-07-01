@@ -110,7 +110,7 @@ func (sv *AccountService) Get(login, userinfo *bool) error {
 	return nil
 }
 
-func (sv *AccountService) GetAll(limit *int, page *int) error {
+func (sv *AccountService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -203,7 +203,6 @@ func (sv *AccountService) Update(password, displayname, roleid, email *bool) err
 			sql = sql[:len(sql)-1]
 			break
 		}
-
 		sql += ","
 	}
 	sql += " WHERE account_username=@username;"
