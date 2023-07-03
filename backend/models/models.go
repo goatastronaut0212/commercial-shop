@@ -4,7 +4,7 @@ import "time"
 
 type Account struct {
 	Username    string `json:"username"    binding:"required"`
-	RoleId      uint   `json:"roleId"      binding:"required"`
+	RoleId      int    `json:"roleId"      binding:"required"`
 	Password    string `json:"password"    binding:"required"`
 	DisplayName string `json:"displayName" binding:"required"`
 	Email       string `json:"email"       binding:"required"`

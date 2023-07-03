@@ -23,17 +23,13 @@ func (sv *AccountService) Create() error {
 	defer conn.Close()
 
 	// SQL commamd check options input
-	sql := "INSERT INTO Account (account_username, account_password, role_id, account_email) VALUES (@username, @password, @role_id, @email);"
+	sql := "INSERT INTO Account VALUES (@username, @role_id, @password, @display_name, @email, 0);"
 	args := pgx.NamedArgs{
-		"username": sv.Items[0].Username,
-		"role_id":  sv.Items[0].RoleId,
-		"password": sv.Items[0].Password,
-		"email":    sv.Items[0].Email,
-	}
-
-	if sv.Items[0].DisplayName != "" {
-		sql = "INSERT INTO Account (account_username, account_password, account_displayname, role_id, account_email) VALUES (@username, @password, @display_name, @role_id, @email);"
-		args["display_name"] = sv.Items[0].DisplayName
+		"username":    sv.Items[0].Username,
+		"role_id":     sv.Items[0].RoleId,
+		"password":    sv.Items[0].Password,
+		"displayname": sv.Items[0].DisplayName,
+		"email":       sv.Items[0].Email,
 	}
 
 	// Execute sql command
