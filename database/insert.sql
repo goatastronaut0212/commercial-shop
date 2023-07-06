@@ -26,3 +26,10 @@ INSERT INTO Account (account_username, account_password, role_id, account_email)
 
 INSERT INTO Customer VALUES
 ('1', 'noob', 'Noob', '123456', 'TP HCM');
+
+INSERT INTO BillStatus VALUES
+(0, 'Đơn hàng bị hủy'),
+(1, 'Đang xác nhận đơn hàng'),
+(2, 'Đang tiếp nhận hàng'),
+(3, 'Đang giao hàng'),
+(4, 'Đã hoàn thành');

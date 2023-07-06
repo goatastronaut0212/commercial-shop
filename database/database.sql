@@ -25,8 +25,8 @@ CREATE TABLE ProductDetail (
     product_fabric       VARCHAR(20)  DEFAULT 'Chưa có thông tin',
     product_size         VARCHAR(4)   DEFAULT '',
     product_form         VARCHAR(20)  DEFAULT '',
-    product_amount       INT          CHECK (product_amount >= 0) DEFAULT 0,
     product_price        INT          DEFAULT 0,
+    product_amount       INT          CHECK (product_amount >= 0) DEFAULT 0,
     product_description  VARCHAR(200) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (product_detail_id),
     CONSTRAINT fk_product_id_for_product_detail
@@ -65,11 +65,10 @@ CREATE TABLE Account (
 
 CREATE TABLE Customer (
     customer_id      VARCHAR(20)  NOT NULL,
-    account_username VARCHAR(20)  NOT NULL,
+    account_username VARCHAR(20)  NOT NULL UNIQUE,
     customer_name    VARCHAR(50)  DEFAULT 'Chưa có thông tin',
     customer_phone   VARCHAR(20)  DEFAULT 'Chưa có thông tin',
-    customer_email   VARCHAR(100) DEFAULT 'Chưa có thông tin', 
-    customer_address VARCHAR(100) DEFAULT 'Chưa có thông tin',
+    customer_address VARCHAR(200) DEFAULT 'Chưa có thông tin',
     PRIMARY KEY (customer_id),
     CONSTRAINT fk_account_username_for_customer
         FOREIGN KEY (account_username)

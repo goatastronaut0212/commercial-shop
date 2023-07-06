@@ -92,10 +92,39 @@ func UpdateProductDetail(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Id = c.Param("id")
 
+	// Check input options
+	productid, color, fabric, size, form, amount, price, description :=
+		true, true, true, true, true, true, true, true
+
+	if data.Items[0].ProductId == "" {
+		productid = false
+	}
+	if data.Items[0].Color == "" {
+		color = false
+	}
+	if data.Items[0].Fabric == "" {
+		fabric = false
+	}
+	if data.Items[0].Size == "" {
+		size = false
+	}
+	if data.Items[0].Form == "" {
+		form = false
+	}
+	if data.Items[0].Amount == -1 {
+		amount = false
+	}
+	if data.Items[0].Price == -1 {
+		price = false
+	}
+	if data.Items[0].Description == "" {
+		description = false
+	}
+
 	// Execute method and send status request to user
-	err := data.Update()
+	err := data.Update(&productid, &color, &fabric, &size, &form, &amount, &price, &description)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update product detail!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": "update product detail successfully!"})

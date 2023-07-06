@@ -86,7 +86,7 @@ func (sv *DiscountService) Get() error {
 	return nil
 }
 
-func (sv *DiscountService) GetAll(limit *int, page *int) error {
+func (sv *DiscountService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -134,7 +134,7 @@ func (sv *DiscountService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *DiscountService) Update() error {
+func (sv *DiscountService) Update(description, percent, start, end *bool) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -143,25 +143,44 @@ func (sv *DiscountService) Update() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := ""
-	args := pgx.NamedArgs{}
-	if sv.Items[0].DateStart.IsZero() && sv.Items[0].DateEnd.IsZero() {
-		sql = "UPDATE Discount SET discount_description=@description, discount_percent=@percent WHERE discount_id=@id;"
-		args = pgx.NamedArgs{
-			"id":          sv.Items[0].Id,
-			"description": sv.Items[0].Description,
-			"percent":     sv.Items[0].Percent,
+	sql := "UPDATE Discount SET "
+	args := pgx.NamedArgs{"id": sv.Items[0].Id}
+	nextoption := true
+
+	for i := 0; i < 4; i++ {
+		switch {
+		case *description == true:
+			sql += "discount_description=@description"
+			args["description"] = sv.Items[0].Description
+			*description = false
+
+		case *percent == true:
+			sql += "discount_percent=@percent"
+			args["percent"] = sv.Items[0].Percent
+			*percent = false
+
+		case *start == true:
+			sql += "discount_date_start=@start"
+			args["start"] = sv.Items[0].DateStart
+			*start = false
+
+		case *end == true:
+			sql += "discount_date_end=@end"
+			args["end"] = sv.Items[0].DateEnd
+			*end = false
+
+		default:
+			nextoption = false
 		}
-	} else {
-		sql = "UPDATE Discount SET discount_description=@description, discount_percent=@percent, discount_date_start=@dateStart, discount_date_end=@dateEnd WHERE discount_id=@id;"
-		args = pgx.NamedArgs{
-			"id":          sv.Items[0].Id,
-			"description": sv.Items[0].Description,
-			"percent":     sv.Items[0].Percent,
-			"dateStart":   sv.Items[0].DateStart,
-			"dateEnd":     sv.Items[0].DateEnd,
+
+		// comma false
+		if !nextoption {
+			sql = sql[:len(sql)-1]
+			break
 		}
+		sql += ","
 	}
+	sql += " WHERE discount_id=@id;"
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

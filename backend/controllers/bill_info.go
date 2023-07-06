@@ -92,8 +92,24 @@ func UpdateBillInfo(c *gin.Context) {
 	c.ShouldBindJSON(&data.Items[0])
 	data.Items[0].Id = c.Param("id")
 
+	// Check input options
+	customerid, date, status, payment := true, true, true, true
+
+	if data.Items[0].CustomerId == "" {
+		customerid = false
+	}
+	if data.Items[0].Date.IsZero() {
+		date = false
+	}
+	if data.Items[0].Status == -1 {
+		status = false
+	}
+	if data.Items[0].Payment == -1 {
+		payment = false
+	}
+
 	// Execute method and send status request to user
-	err := data.Update()
+	err := data.Update(&customerid, &date, &status, &payment)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "can't update bill info!"})
 		return

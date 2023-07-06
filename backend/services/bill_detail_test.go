@@ -73,7 +73,8 @@ func Test_UpdateBillDetail(t *testing.T) {
 	}}}
 
 	// Execute method and if error happen send error
-	err := data.Update()
+	billid_option, productdetailid_option, discountid_option, ammount_option := true, true, true, true
+	err := data.Update(&billid_option, &productdetailid_option, &discountid_option, &ammount_option)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}

@@ -88,7 +88,7 @@ func (sv *BillDetailService) Get() error {
 	return nil
 }
 
-func (sv *BillDetailService) GetAll(limit *int, page *int) error {
+func (sv *BillDetailService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -134,7 +134,7 @@ func (sv *BillDetailService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *BillDetailService) Update() error {
+func (sv *BillDetailService) Update(billid, productdetailid, discountid, amount *bool) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -143,14 +143,44 @@ func (sv *BillDetailService) Update() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "UPDATE BillDetail SET bill_id=@bill_id, product_detail_id=@product_detail_id, discount_id=@discount_id, bill_amount=@amount WHERE bill_detail_id=@id;"
-	args := pgx.NamedArgs{
-		"id":                sv.Items[0].Id,
-		"bill_id":           sv.Items[0].BillId,
-		"product_detail_id": sv.Items[0].ProductDetailId,
-		"discount_id":       sv.Items[0].DiscountId,
-		"amount":            sv.Items[0].Amount,
+	sql := "UPDATE BillDetail SET "
+	args := pgx.NamedArgs{"id": sv.Items[0].Id}
+	nextoption := true
+
+	for i := 0; i < 4; i++ {
+		switch {
+		case *billid == true:
+			sql += "bill_id=@bill_id"
+			args["bill_id"] = sv.Items[0].BillId
+			*billid = false
+
+		case *productdetailid == true:
+			sql += "product_detail_id=@product_detail_id"
+			args["@product_detail_id"] = sv.Items[0].ProductDetailId
+			*productdetailid = false
+
+		case *discountid == true:
+			sql += "discount_id=@discount"
+			args["discount"] = sv.Items[0].DiscountId
+			*discountid = false
+
+		case *amount == true:
+			sql += "bill_ammount=@amount"
+			args["amount"] = sv.Items[0].Amount
+			*amount = false
+
+		default:
+			nextoption = false
+		}
+
+		// comma false
+		if !nextoption {
+			sql = sql[:len(sql)-1]
+			break
+		}
+		sql += ","
 	}
+	sql += " WHERE bill_detail_id=@id;"
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

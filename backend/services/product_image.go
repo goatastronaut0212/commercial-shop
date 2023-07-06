@@ -25,7 +25,7 @@ func (sv *ProductImageService) Create() error {
 	sql := "INSERT INTO ProductImage VALUES (@id, @idProductDetail, @image);"
 	args := pgx.NamedArgs{
 		"id":              sv.Items[0].Id,
-		"idProductDetail": sv.Items[0].IdProductDetail,
+		"idProductDetail": sv.Items[0].ProductDetailId,
 		"image":           sv.Items[0].Image,
 	}
 
@@ -72,7 +72,7 @@ func (sv *ProductImageService) Get() error {
 	// Get rows from conn with SQL command
 	err = conn.QueryRow(database.CTX, sql).Scan(
 		&sv.Items[0].Id,
-		&sv.Items[0].IdProductDetail,
+		&sv.Items[0].ProductDetailId,
 		&sv.Items[0].Image,
 	)
 	if err != nil {
@@ -82,7 +82,7 @@ func (sv *ProductImageService) Get() error {
 	return nil
 }
 
-func (sv *ProductImageService) GetAll(limit *int, page *int) error {
+func (sv *ProductImageService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -110,7 +110,7 @@ func (sv *ProductImageService) GetAll(limit *int, page *int) error {
 
 		err := rows.Scan(
 			&sv.Items[i].Id,
-			&sv.Items[i].IdProductDetail,
+			&sv.Items[i].ProductDetailId,
 			&sv.Items[i].Image,
 		)
 		if err != nil {
@@ -126,7 +126,7 @@ func (sv *ProductImageService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *ProductImageService) Update() error {
+func (sv *ProductImageService) Update(productdetailid, image *bool) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -135,21 +135,19 @@ func (sv *ProductImageService) Update() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := ""
-	args := pgx.NamedArgs{}
-	if sv.Items[0].Image == nil {
-		sql = "UPDATE ProductImage SET product_detail_id=@idProductDetail, product_image=@image WHERE product_image_id=@id;"
-		args = pgx.NamedArgs{
-			"id":              sv.Items[0].Id,
-			"idProductDetail": sv.Items[0].IdProductDetail,
-		}
-	} else {
-		sql = "UPDATE ProductImage SET product_detail_id=@idProductDetail, product_image=@image WHERE product_image_id=@id;"
-		args = pgx.NamedArgs{
-			"id":              sv.Items[0].Id,
-			"idProductDetail": sv.Items[0].IdProductDetail,
-			"image":           sv.Items[0].Image,
-		}
+	sql := "UPDATE ProductImage SET product_detail_id=@productdetailid, product_image=@image WHERE product_image_id=@id;"
+	args := pgx.NamedArgs{
+		"id":              sv.Items[0].Image,
+		"productdetailid": sv.Items[0].ProductDetailId,
+		"image":           sv.Items[0].Image,
+	}
+
+	if *productdetailid {
+		sql = "UPDATE ProductImage SET product_image=@image WHERE product_image_id=@id;"
+		delete(args, "productdetailid")
+	} else if *image {
+		sql = "UPDATE ProductImage SET product_detail_id=@productdetailid WHERE product_image_id=@id;"
+		delete(args, "image")
 	}
 
 	// Execute sql command

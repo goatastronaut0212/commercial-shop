@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"strconv"
 
 	"commercial-shop.com/database"
@@ -22,13 +23,14 @@ func (sv *ProductDetailService) Create() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "INSERT INTO ProductDetail VALUES (@id, @idProduct, @color, @fabric, @size, @price, @amount, @description);"
+	sql := "INSERT INTO ProductDetail VALUES (@id, @productid, @color, @fabric, @size, @form, @price, @amount, @description);"
 	args := pgx.NamedArgs{
 		"id":          sv.Items[0].Id,
-		"idProduct":   sv.Items[0].IdProduct,
+		"productid":   sv.Items[0].ProductId,
 		"color":       sv.Items[0].Color,
 		"fabric":      sv.Items[0].Fabric,
 		"size":        sv.Items[0].Size,
+		"form":        sv.Items[0].Form,
 		"price":       sv.Items[0].Price,
 		"amount":      sv.Items[0].Amount,
 		"description": sv.Items[0].Description,
@@ -37,6 +39,7 @@ func (sv *ProductDetailService) Create() error {
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
@@ -77,10 +80,11 @@ func (sv *ProductDetailService) Get() error {
 	// Get rows from conn with SQL command
 	err = conn.QueryRow(database.CTX, sql).Scan(
 		&sv.Items[0].Id,
-		&sv.Items[0].IdProduct,
+		&sv.Items[0].ProductId,
 		&sv.Items[0].Color,
 		&sv.Items[0].Fabric,
 		&sv.Items[0].Size,
+		&sv.Items[0].Form,
 		&sv.Items[0].Price,
 		&sv.Items[0].Amount,
 		&sv.Items[0].Description)
@@ -91,7 +95,7 @@ func (sv *ProductDetailService) Get() error {
 	return nil
 }
 
-func (sv *ProductDetailService) GetAll(limit *int, page *int) error {
+func (sv *ProductDetailService) GetAll(limit, page *int) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -119,10 +123,11 @@ func (sv *ProductDetailService) GetAll(limit *int, page *int) error {
 
 		err := rows.Scan(
 			&sv.Items[i].Id,
-			&sv.Items[i].IdProduct,
+			&sv.Items[i].ProductId,
 			&sv.Items[i].Color,
 			&sv.Items[i].Fabric,
 			&sv.Items[i].Size,
+			&sv.Items[i].Form,
 			&sv.Items[i].Price,
 			&sv.Items[i].Amount,
 			&sv.Items[i].Description,
@@ -140,7 +145,7 @@ func (sv *ProductDetailService) GetAll(limit *int, page *int) error {
 	return nil
 }
 
-func (sv *ProductDetailService) Update() error {
+func (sv *ProductDetailService) Update(productid, color, fabric, size, form, amount, price, description *bool) error {
 	// Connect to database and close after executing command
 	conn, err := pgxpool.New(database.CTX, database.CONNECT_STR)
 	if err != nil {
@@ -149,17 +154,65 @@ func (sv *ProductDetailService) Update() error {
 	defer conn.Close()
 
 	// SQL commamd
-	sql := "UPDATE ProductDetail SET product_id=@idProduct, product_color=@color, product_fabric=@fabric, product_size=@size, product_price=@price, product_amount=@amount, product_description=@description WHERE product_detail_id=@id;"
-	args := pgx.NamedArgs{
-		"id":          sv.Items[0].Id,
-		"idProduct":   sv.Items[0].IdProduct,
-		"color":       sv.Items[0].Color,
-		"fabric":      sv.Items[0].Fabric,
-		"size":        sv.Items[0].Size,
-		"price":       sv.Items[0].Price,
-		"amount":      sv.Items[0].Amount,
-		"description": sv.Items[0].Description,
+	sql := "UPDATE ProductDetail SET "
+	args := pgx.NamedArgs{"id": sv.Items[0].Id}
+	nextoption := true
+
+	for i := 0; i < 8; i++ {
+		switch {
+		case *productid == true:
+			sql += "product_id=@product_id"
+			args["product_id"] = sv.Items[0].ProductId
+			*productid = false
+
+		case *color == true:
+			sql += "product_color=@color"
+			args["percent"] = sv.Items[0].Color
+			*color = false
+
+		case *fabric == true:
+			sql += "product_fabric=@fabric"
+			args["fabric"] = sv.Items[0].Fabric
+			*fabric = false
+
+		case *size == true:
+			sql += "product_size=@size"
+			args["size"] = sv.Items[0].Size
+			*size = false
+
+		case *form == true:
+			sql += "product_size=@form"
+			args["form"] = sv.Items[0].Form
+			*form = false
+
+		case *price == true:
+			sql += "product_price=@price"
+			args["price"] = sv.Items[0].Price
+			*price = false
+
+		case *amount == true:
+			sql += "product_amount=@amount"
+			args["amount"] = sv.Items[0].Amount
+			*amount = false
+
+		case *description == true:
+			sql += "product_description=@description"
+			args["description"] = sv.Items[0].Description
+			*description = false
+
+		default:
+			nextoption = false
+		}
+
+		// comma false
+		if !nextoption {
+			sql = sql[:len(sql)-1]
+			break
+		}
+		sql += ","
 	}
+	sql += " WHERE product_detail_id=@id;"
+	fmt.Println(sql)
 
 	// Execute sql command
 	_, err = conn.Exec(database.CTX, sql, args)

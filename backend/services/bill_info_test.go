@@ -74,7 +74,8 @@ func Test_UpdateBillInfo(t *testing.T) {
 	}}}
 
 	// Execute method and if error happen send error
-	err := data.Update()
+	customerid, date, status, payment := true, true, true, true
+	err := data.Update(&customerid, &date, &status, &payment)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
