@@ -1,8 +1,11 @@
-import React from 'react'
+import Menu from '../components/Menu'
 
-function Product() {
+function Product(): JSX.Element {
   return (
-    <div>Home</div>
+    <div>
+      <Menu />
+      <div>Product</div>
+    </div>
   )
 }
 

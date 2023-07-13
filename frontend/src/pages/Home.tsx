@@ -1,10 +1,14 @@
-import React from 'react'
-import  NavMenu from "../components/NavMenu"
+import { useState } from 'react'
 
-function Home() {
+import Menu from '../components/Menu'
+
+function Home(): JSX.Element {
+  const [language, setLanguage] = useState<string>('vn')
+
   return (
-    <div> 
-      <NavMenu />
+    <div>
+      <Menu />
+      <div>Home Page</div>
     </div>
   )
 }
